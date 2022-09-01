@@ -1,5 +1,19 @@
 trigger: none
 
+schedules:
+  - cron: "*/10 * * * *"
+    displayName: At every 10th minute
+    branches:
+      include:
+        - main
+    always: true
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  - group: tibber-pulse
+
 steps:
   - task: PowerShell@2
     inputs:
@@ -7,4 +21,5 @@ steps:
       pwsh: true
     displayName: Tibber Pulse
     env:
-        SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+      GF_API_KEY: $(GF_API_KEY)
+      AZURE_PIPELINES: true
