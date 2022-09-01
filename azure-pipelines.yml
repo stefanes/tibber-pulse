@@ -1,0 +1,7 @@
+trigger: none
+
+steps:
+  - task: PowerShell@2
+    inputs:
+      filePath: $(Build.SourcesDirectory)/tibber-pulse.ps1
+      pwsh: true
