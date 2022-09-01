@@ -5,3 +5,6 @@ steps:
     inputs:
       filePath: $(Build.SourcesDirectory)/tibber-pulse.ps1
       pwsh: true
+    displayName: Tibber Pulse
+    env:
+        SYSTEM_ACCESSTOKEN: $(System.AccessToken)
