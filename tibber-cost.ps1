@@ -43,9 +43,9 @@ Get-TibberPriceInfo -HomeId $homeId -IncludeToday:$($Today.IsPresent) -IncludeTo
     $priceLevelMetrics += $metricDataPoint
 }
 
-# # Send metrics to Graphite
-# $priceInfoMetrics = Get-GraphiteMetric -Metrics $priceInfoMetrics -Name 'tibber.price.hourly' -IntervalInSeconds 3600 # 1 hour
-# Send-GraphiteMetric -Metrics $priceInfoMetrics
+# Send metrics to Graphite
+$priceInfoMetrics = Get-GraphiteMetric -Metrics $priceInfoMetrics -Name 'tibber.price.hourly' -IntervalInSeconds 3600 # 1 hour
+Send-GraphiteMetric -Metrics $priceInfoMetrics
 
-# $priceLevelMetrics = Get-GraphiteMetric -Metrics $priceLevelMetrics -Name 'tibber.price.level' -IntervalInSeconds 3600 # 1 hour
-# Send-GraphiteMetric -Metrics $priceLevelMetrics
+$priceLevelMetrics = Get-GraphiteMetric -Metrics $priceLevelMetrics -Name 'tibber.price.level' -IntervalInSeconds 3600 # 1 hour
+Send-GraphiteMetric -Metrics $priceLevelMetrics

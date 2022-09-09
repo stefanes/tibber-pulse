@@ -1,15 +1,15 @@
 trigger: none
 
 schedules:
-  - cron: "0 15 * * *"
-    displayName: At 15:00
+  - cron: "0 16 * * *"
+    displayName: At 16:00
     branches:
       include:
         - main
     always: true
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: windows-latest
 
 variables:
   - group: tibber-pulse
@@ -20,7 +20,7 @@ steps:
         modules:
           - PSTibber
           - PSGraphite
-        allowPrerelease: true
+        allowPrerelease: false
         reinstall: true
 
   - task: PowerShell@2
