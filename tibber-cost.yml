@@ -1,0 +1,33 @@
+trigger: none
+
+schedules:
+  - cron: "0 16 * * *"
+    displayName: At 16:00
+    branches:
+      include:
+        - main
+    always: true
+
+pool:
+  vmImage: windows-latest
+
+variables:
+  - group: tibber-pulse
+
+steps:
+    - template: templates/install-modules.yml
+      parameters:
+        modules:
+          - PSTibber
+          - PSGraphite
+        allowPrerelease: false
+        reinstall: true
+
+  - task: PowerShell@2
+    inputs:
+      filePath: $(Build.SourcesDirectory)/tibber-cost.ps1
+      pwsh: true
+    displayName: Tibber Cost
+    env:
+      TIBBER_ACCESS_TOKEN: $(TIBBER_API_KEY)
+      GRAPHITE_ACCESS_TOKEN: $(GF_API_KEY)

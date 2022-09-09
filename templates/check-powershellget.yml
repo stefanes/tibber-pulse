@@ -1,0 +1,33 @@
+parameters:
+  # Minimum version of PowerShellGet we accept.
+  - name: minPowerShellGetVersion
+    default: "2.2.5"
+
+steps:
+  - pwsh: |
+      [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
+      $minimumVersion = [System.Version]"${{ parameters.minPowerShellGetVersion }}"
+      $currentVersion = (Get-Module -Name PowerShellGet -ListAvailable | Sort-Object -Property Version -Descending | Select-Object -First 1).Version
+
+      Write-Host "Current PowerShellGet version: $currentVersion"
+      Write-Host "Minimum required PowerShellGet version: $minimumVersion"
+
+      if ($currentVersion -lt $minimumVersion) {
+          Write-Host "PowerShellGet is below the minimum required version..."
+          $splat = @{
+              Name               = PowerShellGet
+              MinimumVersion     = $minimumVersion
+              Repository         = 'PSGallery'
+              Scope              = 'CurrentUser'
+              AllowClobber       = $true
+              Force              = $true
+              PassThru           = $true
+          }
+          Write-Host "##[command]Install-Module @splat"
+          Write-Host "##[command]> with `$splat -> $($splat | ConvertTo-Json -Depth 10)"
+          Install-Module @splat
+      } else {
+          Write-Host "PowerShellGet version meets the minimum requirement"
+      }
+    displayName: Check PowerShellGet version
