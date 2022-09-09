@@ -15,7 +15,15 @@ See [here](https://github.com/stefanes/PSTibber#authentication) and [here](https
 
 ### Get today's or tomorrow's energy prices
 
-The script `tibber-cost.ps1` will get tomorrow's (or today's) energy prices and publish the data in two Graphite series, `tibber.price.hourly` and `tibber.price.level`. The `tibber.price.level` series is tagged with the price level as defined [here](https://developer.tibber.com/docs/reference#pricelevel).
+The script `tibber-cost.ps1` will get tomorrow's (or today's) energy prices and publish the data in two Graphite series, `tibber.price.hourly` and `tibber.price.level`. The `tibber.price.level` series contains the price levels as defined [here](https://developer.tibber.com/docs/reference#pricelevel), translated into the following values:
+
+| Price level      | Value |
+| ---------------- | ----- |
+| `VERY_CHEAP`     | 10    |
+| `CHEAP`          | 20    |
+| `NORMAL`         | 30    |
+| `EXPENSIVE`      | 40    |
+| `VERY_EXPENSIVE` | 50    |
 
 Tomorrow's energy prices:
 
