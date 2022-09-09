@@ -15,13 +15,13 @@ variables:
   - group: tibber-pulse
 
 steps:
-    - template: templates/install-modules.yml
-      parameters:
-        modules:
-          - PSTibber
-          - PSGraphite
-        allowPrerelease: false
-        reinstall: true
+  - template: templates/install-modules.yml
+    parameters:
+      modules:
+        - PSTibber
+        - PSGraphite
+      allowPrerelease: false
+      reinstall: true
 
   - task: PowerShell@2
     inputs:
