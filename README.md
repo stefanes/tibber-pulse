@@ -1,6 +1,6 @@
 # Tibber Pulse
 
-Scripts (and [Azure Pipelines](https://dev.azure.com/stefanes/tibber-pulse/_build)) for tracking energy prices and consumption using [the Tibber GraphQL APIs](https://developer.tibber.com/docs/reference).
+Scripts (and [Azure Pipelines](https://dev.azure.com/stefanes/tibber-pulse/_build)) for tracking energy prices and consumption using [the Tibber GraphQL API](https://developer.tibber.com/docs/reference).
 
 ## Installation
 
