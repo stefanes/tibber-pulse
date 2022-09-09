@@ -2,6 +2,10 @@
     [switch] $Today
 )
 
+# Import required modules
+Import-Module -Name PSTibber -Force -PassThru
+Import-Module -Name PSGraphite -Force -PassThru
+
 # Get home Id
 $myHome = (Get-TibberHome -Fields 'id', 'appNickname')[0]
 $homeId = $myHome.id
