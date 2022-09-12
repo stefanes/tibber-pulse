@@ -1,12 +1,12 @@
 trigger: none
 
-# schedules:
-#   - cron: "0 * * * *"
-#     displayName: At minute 0
-#     branches:
-#       include:
-#         - main
-#     always: true
+schedules:
+  - cron: "0 * * * *"
+    displayName: At minute 0
+    branches:
+      include:
+        - main
+    always: true
 
 pool:
   vmImage: windows-latest
