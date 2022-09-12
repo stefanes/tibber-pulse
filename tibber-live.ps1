@@ -87,7 +87,9 @@ $subscription = Register-TibberLiveConsumptionSubscription -Connection $connecti
 Write-Host "New GraphQL subscription created: $($subscription.Id)"
 
 # Read data stream
-$result = Read-TibberWebSocket -Connection $connection -Callback ${function:Send-LiveMetricsToGraphite} -ReadUntil (([DateTime]::Now).AddHours(1) | Get-Date -Minute 0 -Second 0 -Millisecond 0) -Verbose
+$readUntil = ([DateTime]::Now).AddHours(1) | Get-Date -Minute 2 -Second 0 -Millisecond 0
+Write-Host "Reading metrics until $($readUntil.ToString('yyyy-MM-dd HH:mm'))..."
+$result = Read-TibberWebSocket -Connection $connection -Callback ${function:Send-LiveMetricsToGraphite} -ReadUntil $readUntil -Verbose
 Write-Host "Read $($result.NumberOfPackages) package(s) in $($result.ElapsedTimeInSeconds) seconds"
 
 # Unregister subscription and close down the WebSocket connection
