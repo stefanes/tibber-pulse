@@ -1,13 +1,14 @@
 ﻿param (
     [switch] $Today,
-    [switch] $Publish
+    [switch] $Publish,
+    [switch] $Detailed
 )
 
 # Import required modules
 Import-Module -Name PSTibber -Force -PassThru
 Import-Module -Name PSGraphite -Force -PassThru
 
-# Get home Id
+# Get the home Id
 $myHome = (Get-TibberHome -Fields 'id', 'appNickname')[0]
 $homeId = $myHome.id
 Write-Host "Home ID for '$($myHome.appNickname)': $homeId"
@@ -58,8 +59,8 @@ Get-TibberPriceInfo -HomeId $homeId -IncludeToday:$($Today.IsPresent) -IncludeTo
 # Send metrics to Graphite
 if ($Publish.IsPresent) {
     $priceInfoMetrics = Get-GraphiteMetric -Metrics $priceInfoMetrics -Name 'tibber.price.hourly' -IntervalInSeconds 3600 # 1 hour
-    Send-GraphiteMetric -Metrics $priceInfoMetrics
+    Send-GraphiteMetric -Metrics $priceInfoMetrics | ForEach-Object { if ($Detailed.IsPresent) { $_ | Out-Host } }
 
     $priceLevelMetrics = Get-GraphiteMetric -Metrics $priceLevelMetrics -Name 'tibber.price.level' -IntervalInSeconds 3600 # 1 hour
-    Send-GraphiteMetric -Metrics $priceLevelMetrics
+    Send-GraphiteMetric -Metrics $priceLevelMetrics | ForEach-Object { if ($Detailed.IsPresent) { $_ | Out-Host } }
 }

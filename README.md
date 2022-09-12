@@ -5,6 +5,7 @@ Scripts and [pipelines](https://dev.azure.com/stefanes/tibber-pulse/_build) for 
 | Pipeline | Build status |
 | ---------| ------------ |
 | [tibber-pulse](https://dev.azure.com/stefanes/tibber-pulse/_build?definitionId=199&_a=summary) | [![Build Status](https://dev.azure.com/stefanes/tibber-pulse/_apis/build/status/tibber-cost?branchName=main)](https://dev.azure.com/stefanes/tibber-pulse/_build/latest?definitionId=199&branchName=main) |
+| [tibber-live](https://dev.azure.com/stefanes/tibber-pulse/_build?definitionId=200&_a=summary) | [![Build Status](https://dev.azure.com/stefanes/tibber-pulse/_apis/build/status/stefanes.tibber-pulse?branchName=main)](https://dev.azure.com/stefanes/tibber-pulse/_build/latest?definitionId=200&branchName=main) |
 
 ## Installation
 
@@ -19,7 +20,7 @@ See [here](https://github.com/stefanes/PSTibber#authentication) and [here](https
 
 ### Get today's or tomorrow's energy prices
 
-The script `tibber-cost.ps1` will get tomorrow's (or today's) energy prices and publish the data (if the `-Publish` switch is provided) in two Graphite series, `tibber.price.hourly` and `tibber.price.level`. The `tibber.price.level` series contains the price levels as defined [here](https://developer.tibber.com/docs/reference#pricelevel), translated into the following values:
+Use `tibber-cost.ps1` to get tomorrow's (or today's) energy prices and publish the data (if the `-Publish` switch is provided) in two Graphite series, `tibber.price.hourly` and `tibber.price.level`. The `tibber.price.level` series contains the price levels as defined [here](https://developer.tibber.com/docs/reference#pricelevel), translated into the following values:
 
 | Price level      | Value |
 | ---------------- | ----- |
@@ -69,3 +70,19 @@ New energy prices:
     2.2321 SEK at 09/09/2022 22:00:00 [VERY_CHEAP]
     1.1728 SEK at 09/09/2022 23:00:00 [VERY_CHEAP]
 ```
+
+### Get live measurements
+
+Use `tibber-live.ps1` to get live measurements and publish the data (if the `-Publish` switch is provided) in the following Graphite series:
+
+| Graphite series               | Measurement       |
+| ----------------------------- | ----------------- |
+| `tibber.live.power`           | `power`           |
+| `tibber.live.powerProduction` | `powerProduction` |
+| `tibber.live.voltagePhase1`   | `voltagePhase1`   |
+| `tibber.live.voltagePhase2`   | `voltagePhase2`   |
+| `tibber.live.voltagePhase3`   | `voltagePhase3`   |
+| `tibber.live.currentL1`       | `currentL1`       |
+| `tibber.live.currentL2`       | `currentL2`       |
+| `tibber.live.currentL3`       | `currentL3`       |
+| `tibber.live.signalStrength`  | `signalStrength`  |

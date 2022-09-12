@@ -1,18 +1,17 @@
 trigger: none
 
-schedules:
-  - cron: "0 13 * * *"
-    displayName: At 13:00 # UTC = 14 CET/15 CEST
-    branches:
-      include:
-        - main
-    always: true
+# schedules:
+#   - cron: "0 * * * *"
+#     displayName: At minute 0
+#     branches:
+#       include:
+#         - main
+#     always: true
 
 pool:
   vmImage: windows-latest
 
 variables:
-  # - group: tibber-pulse-demo
   - group: tibber-pulse
 
 steps:
@@ -26,10 +25,11 @@ steps:
 
   - task: PowerShell@2
     inputs:
-      filePath: $(Build.SourcesDirectory)/tibber-cost.ps1
+      filePath: $(Build.SourcesDirectory)/tibber-live.ps1
       arguments: -Publish -Detailed
       pwsh: true
-    displayName: Tibber Cost
+    displayName: Tibber Live
+    retryCountOnTaskFailure: 10
     env:
       TIBBER_ACCESS_TOKEN: $(TIBBER_API_KEY)
       GRAPHITE_ACCESS_TOKEN: $(GF_API_KEY)
