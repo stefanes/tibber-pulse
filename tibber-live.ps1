@@ -52,9 +52,16 @@ function Send-LiveMetricsToGraphite {
 
     # Publish metrics to Graphite
     if ($env:GRAPHITE_PUBLISH -eq $true) {
-        Send-GraphiteMetric -Metrics $powerMetrics | ForEach-Object { if ($Detailed.IsPresent) { $_ | Out-Host } }
+        $columns = @(
+            @{ label = 'Status'; expression = { $_.StatusCode } }
+            @{ label = '|'; expression = { $_.StatusDescription } }
+            @{ label = 'Published/Invalid'; expression = { "$(($_.Content | ConvertFrom-Json).Published)/$(($_.Content | ConvertFrom-Json).Invalid)" } }
+            @{ label = 'Length'; expression = { $_.RawContentLength } }
+        )
+
+        Send-GraphiteMetric -Metrics $powerMetrics | Select-Object $columns | ForEach-Object { if ($Detailed.IsPresent) { $_ | Out-Host } }
         if ($signalStrengthMetrics) {
-            Send-GraphiteMetric -Metrics $signalStrengthMetrics | ForEach-Object { if ($Detailed.IsPresent) { $_ | Out-Host } }
+            Send-GraphiteMetric -Metrics $signalStrengthMetrics | Select-Object $columns | ForEach-Object { if ($Detailed.IsPresent) { $_ | Out-Host } }
         }
     }
 }
@@ -80,7 +87,7 @@ $subscription = Register-TibberLiveConsumptionSubscription -Connection $connecti
 Write-Host "New GraphQL subscription created: $($subscription.Id)"
 
 # Read data stream
-$result = Read-TibberWebSocket -Connection $connection -Callback ${function:Send-LiveMetricsToGraphite} -ReadUntil (([DateTime]::Now).AddHours(1) | Get-Date -Minute 0 -Second 0 -Millisecond 0)
+$result = Read-TibberWebSocket -Connection $connection -Callback ${function:Send-LiveMetricsToGraphite} -ReadUntil (([DateTime]::Now).AddHours(1) | Get-Date -Minute 0 -Second 0 -Millisecond 0) -Verbose
 Write-Host "Read $($result.NumberOfPackages) package(s) in $($result.ElapsedTimeInSeconds) seconds"
 
 # Unregister subscription and close down the WebSocket connection

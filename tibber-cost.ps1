@@ -58,9 +58,16 @@ Get-TibberPriceInfo -HomeId $homeId -IncludeToday:$($Today.IsPresent) -IncludeTo
 
 # Send metrics to Graphite
 if ($Publish.IsPresent) {
+    $columns = @(
+        @{ label = 'Status'; expression = { $_.StatusCode } }
+        @{ label = '|'; expression = { $_.StatusDescription } }
+        @{ label = 'Published/Invalid'; expression = { "$(($_.Content | ConvertFrom-Json).Published)/$(($_.Content | ConvertFrom-Json).Invalid)" } }
+        @{ label = 'Length'; expression = { $_.RawContentLength } }
+    )
+
     $priceInfoMetrics = Get-GraphiteMetric -Metrics $priceInfoMetrics -Name 'tibber.price.hourly' -IntervalInSeconds 3600 # 1 hour
-    Send-GraphiteMetric -Metrics $priceInfoMetrics | ForEach-Object { if ($Detailed.IsPresent) { $_ | Out-Host } }
+    Send-GraphiteMetric -Metrics $priceInfoMetrics | Select-Object $columns | ForEach-Object { if ($Detailed.IsPresent) { $_ | Out-Host } }
 
     $priceLevelMetrics = Get-GraphiteMetric -Metrics $priceLevelMetrics -Name 'tibber.price.level' -IntervalInSeconds 3600 # 1 hour
-    Send-GraphiteMetric -Metrics $priceLevelMetrics | ForEach-Object { if ($Detailed.IsPresent) { $_ | Out-Host } }
+    Send-GraphiteMetric -Metrics $priceLevelMetrics | Select-Object $columns | ForEach-Object { if ($Detailed.IsPresent) { $_ | Out-Host } }
 }
