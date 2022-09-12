@@ -66,10 +66,8 @@ if ($Publish.IsPresent) {
 }
 
 # Import required modules
-# Import-Module -Name PSTibber -Force -PassThru
-# Import-Module -Name PSGraphite -Force -PassThru
-Invoke-Expression -Command $PSTibber
-Invoke-Expression -Command $PSGraphite
+Import-Module -Name PSTibber -Force -PassThru
+Import-Module -Name PSGraphite -Force -PassThru
 
 # Get the home Id
 $myHome = (Get-TibberHome -Fields 'id', 'appNickname')[0]
