@@ -15,7 +15,7 @@ Write-Host "Home ID for '$($myHome.appNickname)': $homeId"
 # Get hourly consumption
 $consumption = Get-TibberConsumption -HomeId $homeId
 
-Write-Host "New consumption from $($consumption.from) to $($consumption.from):"
+Write-Host "New consumption from $($consumption.from) to $($consumption.to):"
 Write-Host "    $($consumption.consumption * 1000) W"
 Write-Host "    $($consumption.cost) $($consumption.currency)"
 
