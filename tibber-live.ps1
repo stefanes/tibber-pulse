@@ -83,7 +83,7 @@ Write-Host "Home ID for '$($myHome.appNickname)': $homeId"
 
 # Connect WebSocket and register a subscription
 $connection = Connect-TibberWebSocket
-$subscription = Register-TibberLiveConsumptionSubscription -Connection $connection -HomeId $homeId
+$subscription = Register-TibberLiveMeasurementSubscription -Connection $connection -HomeId $homeId
 Write-Host "New GraphQL subscription created: $($subscription.Id)"
 
 # Read data stream
@@ -93,6 +93,6 @@ $result = Read-TibberWebSocket -Connection $connection -Callback ${function:Send
 Write-Host "Read $($result.NumberOfPackages) package(s) in $($result.ElapsedTimeInSeconds) seconds"
 
 # Unregister subscription and close down the WebSocket connection
-Unregister-TibberLiveConsumptionSubscription -Connection $connection -Subscription $subscription
+Unregister-TibberLiveMeasurementSubscription -Connection $connection -Subscription $subscription
 Write-Host "New GraphQL subscription stopped: $($subscription.Id)"
 Disconnect-TibberWebSocket -Connection $connection

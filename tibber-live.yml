@@ -33,7 +33,7 @@ jobs:
           arguments: -Publish -Detailed
           pwsh: true
         displayName: Tibber Live
-        retryCountOnTaskFailure: 3
+        retryCountOnTaskFailure: 30
         env:
           TIBBER_ACCESS_TOKEN: $(TIBBER_API_KEY)
           GRAPHITE_ACCESS_TOKEN: $(GF_API_KEY)
