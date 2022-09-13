@@ -12,24 +12,28 @@ pool:
   vmImage: windows-latest
 
 variables:
-  # - group: tibber-pulse-demo
   - group: tibber-pulse
 
-steps:
-  - template: templates/install-modules.yml
-    parameters:
-      modules:
-        - PSTibber
-        - PSGraphite
-      allowPrerelease: false
-      reinstall: true
+jobs:
+  - job:
+    displayName: Tibber Live
+    timeoutInMinutes: 10
+    steps:
+      - template: templates/install-modules.yml
+        parameters:
+          modules:
+            - PSTibber
+            - PSGraphite
+          allowPrerelease: false
+          reinstall: true
 
-  - task: PowerShell@2
-    inputs:
-      filePath: $(Build.SourcesDirectory)/tibber-cost.ps1
-      arguments: -Publish -Detailed
-      pwsh: true
-    displayName: Tibber Cost
-    env:
-      TIBBER_ACCESS_TOKEN: $(TIBBER_API_KEY)
-      GRAPHITE_ACCESS_TOKEN: $(GF_API_KEY)
+      - task: PowerShell@2
+        inputs:
+          filePath: $(Build.SourcesDirectory)/tibber-cost.ps1
+          arguments: -Publish -Detailed
+          pwsh: true
+        displayName: Tibber Cost
+        retryCountOnTaskFailure: 3
+        env:
+          TIBBER_ACCESS_TOKEN: $(TIBBER_API_KEY)
+          GRAPHITE_ACCESS_TOKEN: $(GF_API_KEY)
