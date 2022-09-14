@@ -19,7 +19,7 @@ Write-Host "New consumption from $($hourlyConsumption.from) to $($hourlyConsumpt
 Write-Host "    $($hourlyConsumption.consumption * 1000) W"
 Write-Host "    $($hourlyConsumption.cost) $($hourlyConsumption.currency)"
 
-$timestamp = Get-GraphiteTimestamp -Timestamp $hourlyConsumption.from
+$timestamp = Get-GraphiteTimestamp -Timestamp $hourlyConsumption.to
 $hourlyConsumptionMetrics = @(
     @{
         name  = "tibber.hourly.consumption"
