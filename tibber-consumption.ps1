@@ -13,21 +13,21 @@ $homeId = $myHome.id
 Write-Host "Home ID for '$($myHome.appNickname)': $homeId"
 
 # Get hourly consumption
-$consumption = Get-TibberConsumption -HomeId $homeId
+$hourlyConsumption = Get-TibberConsumption -HomeId $homeId
 
-Write-Host "New consumption from $($consumption.from) to $($consumption.to):"
-Write-Host "    $($consumption.consumption * 1000) W"
-Write-Host "    $($consumption.cost) $($consumption.currency)"
+Write-Host "New consumption from $($hourlyConsumption.from) to $($hourlyConsumption.to):"
+Write-Host "    $($hourlyConsumption.consumption * 1000) W"
+Write-Host "    $($hourlyConsumption.cost) $($hourlyConsumption.currency)"
 
-$timestamp = Get-GraphiteTimestamp -Timestamp $consumption.from
-$consumptionMetrics = @(
+$timestamp = Get-GraphiteTimestamp -Timestamp $hourlyConsumption.from
+$hourlyConsumptionMetrics = @(
     @{
-        name  = "tibber.consumption.consumption"
-        value = $consumption.consumption * 1000
+        name  = "tibber.hourly.consumption"
+        value = $hourlyConsumption.consumption * 1000
     }
     @{
-        name  = "tibber.consumption.cost"
-        value = $consumption.cost
+        name  = "tibber.hourly.cost"
+        value = $hourlyConsumption.cost
     }
 )
 
@@ -40,6 +40,6 @@ if ($Publish.IsPresent) {
         @{ label = 'Length'; expression = { $_.RawContentLength } }
     )
 
-    $consumptionMetrics = Get-GraphiteMetric -Metrics $consumptionMetrics -Timestamp $timestamp -IntervalInSeconds 3600 # 1 hour
-    Send-GraphiteMetric -Metrics $consumptionMetrics | Select-Object $columns | ForEach-Object { if ($Detailed.IsPresent) { $_ | Out-Host } }
+    $hourlyConsumptionMetrics = Get-GraphiteMetric -Metrics $hourlyConsumptionMetrics -Timestamp $timestamp -IntervalInSeconds 3600 # 1 hour
+    Send-GraphiteMetric -Metrics $hourlyConsumptionMetrics | Select-Object $columns | ForEach-Object { if ($Detailed.IsPresent) { $_ | Out-Host } }
 }

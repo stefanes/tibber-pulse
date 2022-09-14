@@ -4,8 +4,9 @@ Scripts and [pipelines](https://dev.azure.com/stefanes/tibber-pulse/_build) for 
 
 | Pipeline | Build status |
 | ---------| ------------ |
-| [tibber-pulse](https://dev.azure.com/stefanes/tibber-pulse/_build?definitionId=199&_a=summary) | [![Build Status](https://dev.azure.com/stefanes/tibber-pulse/_apis/build/status/tibber-cost?branchName=main)](https://dev.azure.com/stefanes/tibber-pulse/_build/latest?definitionId=199&branchName=main) |
-| [tibber-live](https://dev.azure.com/stefanes/tibber-pulse/_build?definitionId=200&_a=summary) | [![Build Status](https://dev.azure.com/stefanes/tibber-pulse/_apis/build/status/stefanes.tibber-pulse?branchName=main)](https://dev.azure.com/stefanes/tibber-pulse/_build/latest?definitionId=200&branchName=main) |
+| [tibber-pulse](https://dev.azure.com/stefanes/tibber-pulse/_build?definitionId=199&_a=summary)       | [![Build Status](https://dev.azure.com/stefanes/tibber-pulse/_apis/build/status/tibber-cost?branchName=main)](https://dev.azure.com/stefanes/tibber-pulse/_build/latest?definitionId=199&branchName=main) |
+| [tibber-consumption](https://dev.azure.com/stefanes/tibber-pulse/_build?definitionId=201&_a=summary) | [![Build Status](https://dev.azure.com/stefanes/tibber-pulse/_apis/build/status/tibber-consumption?branchName=main)](https://dev.azure.com/stefanes/tibber-pulse/_build/latest?definitionId=201&branchName=main) |
+| [tibber-live](https://dev.azure.com/stefanes/tibber-pulse/_build?definitionId=200&_a=summary)        | [![Build Status](https://dev.azure.com/stefanes/tibber-pulse/_apis/build/status/stefanes.tibber-pulse?branchName=main)](https://dev.azure.com/stefanes/tibber-pulse/_build/latest?definitionId=200&branchName=main) |
 
 ## Installation
 
@@ -20,7 +21,14 @@ See [here](https://github.com/stefanes/PSTibber#authentication) and [here](https
 
 ### Get today's or tomorrow's energy prices
 
-Use `tibber-cost.ps1` to get tomorrow's (or today's) energy prices and publish the data (if the `-Publish` switch is provided) in two Graphite series, `tibber.price.hourly` and `tibber.price.level`. The `tibber.price.level` series contains the price levels as defined [here](https://developer.tibber.com/docs/reference#pricelevel), translated into the following values:
+Use `tibber-cost.ps1` to get tomorrow's (or today's) energy prices and publish the data (if the `-Publish` switch is provided) in the following Graphite series:
+
+| Graphite series       | Measurement   | Resolution |
+| --------------------- | ------------- | ---------- |
+| `tibber.price.hourly` | `total`       | 1 hour     |
+| `tibber.price.level`  | _See below_   | 1 hour     |
+
+The `tibber.price.level` series contains the price levels as defined [here](https://developer.tibber.com/docs/reference#pricelevel), translated into the following values:
 
 | Price level      | Value |
 | ---------------- | ----- |
@@ -71,18 +79,27 @@ New energy prices:
     1.1728 SEK at 09/09/2022 23:00:00 [VERY_CHEAP]
 ```
 
+### Get billed consumption
+
+Use `tibber-consumption.ps1` to get the billed consumption and publish the data (if the `-Publish` switch is provided) in the following Graphite series:
+
+| Graphite series             | Measurement   | Resolution |
+| ----------------------------| ------------- | ---------- |
+| `tibber.hourly.consumption` | `consumption` | 1 hour     |
+| `tibber.hourly.cost`        | `cost`        | 1 hour     |
+
 ### Get live measurements
 
 Use `tibber-live.ps1` to get live measurements and publish the data (if the `-Publish` switch is provided) in the following Graphite series:
 
-| Graphite series               | Measurement       |
-| ----------------------------- | ----------------- |
-| `tibber.live.power`           | `power`           |
-| `tibber.live.powerProduction` | `powerProduction` |
-| `tibber.live.voltagePhase1`   | `voltagePhase1`   |
-| `tibber.live.voltagePhase2`   | `voltagePhase2`   |
-| `tibber.live.voltagePhase3`   | `voltagePhase3`   |
-| `tibber.live.currentL1`       | `currentL1`       |
-| `tibber.live.currentL2`       | `currentL2`       |
-| `tibber.live.currentL3`       | `currentL3`       |
-| `tibber.live.signalStrength`  | `signalStrength`  |
+| Graphite series               | Measurement       | Resolution |
+| ----------------------------- | ----------------- | ---------- |
+| `tibber.live.power`           | `power`           | 10 seconds |
+| `tibber.live.powerProduction` | `powerProduction` | 10 seconds |
+| `tibber.live.voltagePhase1`   | `voltagePhase1`   | 10 seconds |
+| `tibber.live.voltagePhase2`   | `voltagePhase2`   | 10 seconds |
+| `tibber.live.voltagePhase3`   | `voltagePhase3`   | 10 seconds |
+| `tibber.live.currentL1`       | `currentL1`       | 10 seconds |
+| `tibber.live.currentL2`       | `currentL2`       | 10 seconds |
+| `tibber.live.currentL3`       | `currentL3`       | 10 seconds |
+| `tibber.live.signalStrength`  | `signalStrength`  | 2 minutes  |
