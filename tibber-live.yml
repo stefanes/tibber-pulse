@@ -14,12 +14,20 @@ pool:
 variables:
   - group: tibber-pulse
 
+resources:
+  repositories:
+    # See https://github.com/stefanes/azure-pipelines
+    - repository: templates
+      type: github
+      endpoint: stefanes
+      name: stefanes/azure-pipelines
+
 jobs:
   - job:
     displayName: Tibber Live
     timeoutInMinutes: 120
     steps:
-      - template: templates/install-modules.yml
+      - template: install-modules.yml@templates
         parameters:
           modules:
             - PSTibber
@@ -32,7 +40,7 @@ jobs:
           filePath: $(Build.SourcesDirectory)/tibber-live.ps1
           arguments: -Publish -Detailed
           pwsh: true
-        displayName: Tibber Live
+        displayName: Get live measurement metrics
         retryCountOnTaskFailure: 10 # The maximum allowed number of attempts is 10
         env:
           TIBBER_ACCESS_TOKEN: $(TIBBER_API_KEY)

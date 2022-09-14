@@ -40,7 +40,7 @@ jobs:
           filePath: $(Build.SourcesDirectory)/tibber-consumption.ps1
           arguments: -Publish -Detailed
           pwsh: true
-        displayName: Tibber Consumption
+        displayName: Get consumption metrics
         retryCountOnTaskFailure: 3
         env:
           TIBBER_ACCESS_TOKEN: $(TIBBER_API_KEY)
