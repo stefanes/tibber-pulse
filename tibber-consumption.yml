@@ -14,12 +14,20 @@ pool:
 variables:
   - group: tibber-pulse
 
+resources:
+  repositories:
+    # See https://github.com/stefanes/azure-pipelines
+    - repository: templates
+      type: github
+      endpoint: stefanes
+      name: stefanes/azure-pipelines
+
 jobs:
   - job:
     displayName: Tibber Consumption
     timeoutInMinutes: 10
     steps:
-      - template: templates/install-modules.yml
+      - template: install-modules.yml@templates
         parameters:
           modules:
             - PSTibber
