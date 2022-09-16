@@ -21,7 +21,7 @@ See [here](https://github.com/stefanes/PSTibber#authentication) and [here](https
 
 ### Get today's or tomorrow's energy prices
 
-Use `tibber-cost.ps1` to get tomorrow's (or today's) energy prices and publish the data (if the `-Publish` switch is provided) in the following Graphite series:
+Use [`tibber-cost.ps1`](tibber-cost.ps1) to get tomorrow's (or today's) energy prices and publish the data (if the `-Publish` switch is provided) in the following Graphite series:
 
 | Graphite series       | Measurement   | Resolution |
 | --------------------- | ------------- | ---------- |
@@ -81,7 +81,7 @@ New energy prices:
 
 ### Get billed consumption
 
-Use `tibber-consumption.ps1` to get the billed consumption and publish the data (if the `-Publish` switch is provided) in the following Graphite series:
+Use [`tibber-consumption.ps1`](tibber-consumption.ps1) to get the billed consumption and publish the data (if the `-Publish` switch is provided) in the following Graphite series:
 
 | Graphite series             | Measurement   | Resolution |
 | ----------------------------| ------------- | ---------- |
@@ -90,7 +90,7 @@ Use `tibber-consumption.ps1` to get the billed consumption and publish the data 
 
 ### Get live measurements
 
-Use `tibber-live.ps1` to get live measurements and publish the data (if the `-Publish` switch is provided) in the following Graphite series:
+Use [`tibber-live.ps1`](tibber-live.ps1) to get live measurements and publish the data (if the `-Publish` switch is provided) in the following Graphite series:
 
 | Graphite series               | Measurement       | Resolution |
 | ----------------------------- | ----------------- | ---------- |
