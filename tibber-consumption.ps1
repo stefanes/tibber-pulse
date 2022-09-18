@@ -15,7 +15,7 @@ Write-Host "Home ID for '$($myHome.appNickname)': $homeId"
 # Get hourly consumption
 $hourlyConsumption = Get-TibberConsumption -HomeId $homeId
 
-Write-Host "New consumption from $($hourlyConsumption.from) to $($hourlyConsumption.to):"
+Write-Host "New hourly consumption from $($hourlyConsumption.from) to $($hourlyConsumption.to):"
 Write-Host "    $($hourlyConsumption.consumption * 1000) W"
 Write-Host "    $($hourlyConsumption.cost) $($hourlyConsumption.currency)"
 
@@ -37,7 +37,7 @@ $to = [DateTime]::Now | Get-Date -Hour 0 -Minute 0 -Second 0 -Millisecond 0
 if (-Not (Find-GraphiteMetric -Metric 'tibber.daily.consumption' -From $from -To $to)) {
     $dailyConsumption = Get-TibberConsumption -HomeId $homeId -Resolution DAILY
 
-    Write-Host "New consumption from $($dailyConsumption.from) to $($dailyConsumption.to):"
+    Write-Host "New daily consumption from $($dailyConsumption.from) to $($dailyConsumption.to):"
     Write-Host "    $($dailyConsumption.consumption * 1000) W"
     Write-Host "    $($dailyConsumption.cost) $($dailyConsumption.currency)"
 
