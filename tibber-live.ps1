@@ -47,7 +47,7 @@ function Send-LiveMetricsToGraphite {
         $signalStrengthMetrics = Get-GraphiteMetric -Metrics @{
             name  = "tibber.live.signalStrength"
             value = $value
-        } -IntervalInSeconds 120 -Timestamp $timestamp
+        } -Timestamp $timestamp -IntervalInSeconds 120 # 2 min
     }
 
     # Publish metrics to Graphite

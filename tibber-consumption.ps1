@@ -51,7 +51,7 @@ if (-Not (Find-GraphiteMetric -Metric 'tibber.daily.consumption' -From $from -To
             name  = "tibber.daily.cost"
             value = $dailyConsumption.cost
         }
-    ) -IntervalInSeconds 120 -Timestamp $timestamp
+    ) -Timestamp $timestamp -IntervalInSeconds 86400 # 24 hours
 }
 else {
     Write-Host "Daily consumption already published"
