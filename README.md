@@ -85,9 +85,9 @@ Use [`tibber-consumption.ps1`](tibber-consumption.ps1) to get the billed consump
 
 | Graphite series             | Measurement   | Unit | Resolution |
 | ----------------------------| ------------- | ---- | ---------- |
-| `tibber.hourly.consumption` | `consumption` | W    | 1 hour     |
+| `tibber.hourly.consumption` | `consumption` | Wh   | 1 hour     |
 | `tibber.hourly.cost`        | `cost`        | SEK  | 1 hour     |
-| `tibber.daily.consumption`  | `consumption` | W    | 24 hour    |
+| `tibber.daily.consumption`  | `consumption` | Wh   | 24 hour    |
 | `tibber.daily.cost`         | `cost`        | SEK  | 24 hour    |
 
 ### Get live measurements
