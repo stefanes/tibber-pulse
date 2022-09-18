@@ -42,16 +42,21 @@ if (-Not (Find-GraphiteMetric -Metric 'tibber.daily.consumption' -From $from -To
     Write-Host "    $($dailyConsumption.cost) $($dailyConsumption.currency)"
 
     $timestamp = Get-GraphiteTimestamp -Timestamp $dailyConsumption.to
-    $dailyConsumptionMetrics = Get-GraphiteMetric -Metrics @(
-        @{
-            name  = "tibber.daily.consumption"
-            value = $dailyConsumption.consumption * 1000
-        }
-        @{
-            name  = "tibber.daily.cost"
-            value = $dailyConsumption.cost
-        }
-    ) -Timestamp $timestamp -IntervalInSeconds 86400 # 24 hours
+    if ($dailyConsumption) {
+        $dailyConsumptionMetrics = Get-GraphiteMetric -Metrics @(
+            @{
+                name  = "tibber.daily.consumption"
+                value = $dailyConsumption.consumption * 1000
+            }
+            @{
+                name  = "tibber.daily.cost"
+                value = $dailyConsumption.cost
+            }
+        ) -Timestamp $timestamp -IntervalInSeconds 86400 # 24 hours
+    }
+    else {
+        Write-Warning "No daily consumption available"
+    }
 }
 else {
     Write-Host "Daily consumption already published"
