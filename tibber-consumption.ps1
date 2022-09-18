@@ -20,7 +20,7 @@ Write-Host "    $($hourlyConsumption.consumption * 1000) W"
 Write-Host "    $($hourlyConsumption.cost) $($hourlyConsumption.currency)"
 
 $timestamp = Get-GraphiteTimestamp -Timestamp $hourlyConsumption.to
-$hourlyConsumptionMetrics = @(
+$hourlyConsumptionMetrics = Get-GraphiteMetric -Metrics @(
     @{
         name  = "tibber.hourly.consumption"
         value = $hourlyConsumption.consumption * 1000
@@ -29,7 +29,33 @@ $hourlyConsumptionMetrics = @(
         name  = "tibber.hourly.cost"
         value = $hourlyConsumption.cost
     }
-)
+) -Timestamp $timestamp -IntervalInSeconds 3600 # 1 hour
+
+# Get daily consumption
+$from = ([DateTime]::Now).AddDays(-1) | Get-Date -Hour 0 -Minute 0 -Second 0 -Millisecond 0
+$to = [DateTime]::Now | Get-Date -Hour 0 -Minute 0 -Second 0 -Millisecond 0
+if (-Not (Find-GraphiteMetric -Metric 'tibber.daily.consumption' -From $from -To $to)) {
+    $dailyConsumption = Get-TibberConsumption -HomeId $homeId -Resolution DAILY
+
+    Write-Host "New consumption from $($dailyConsumption.from) to $($dailyConsumption.to):"
+    Write-Host "    $($dailyConsumption.consumption * 1000) W"
+    Write-Host "    $($dailyConsumption.cost) $($dailyConsumption.currency)"
+
+    $timestamp = Get-GraphiteTimestamp -Timestamp $dailyConsumption.to
+    $dailyConsumptionMetrics = Get-GraphiteMetric -Metrics @(
+        @{
+            name  = "tibber.daily.consumption"
+            value = $dailyConsumption.consumption * 1000
+        }
+        @{
+            name  = "tibber.daily.cost"
+            value = $dailyConsumption.cost
+        }
+    ) -IntervalInSeconds 120 -Timestamp $timestamp
+}
+else {
+    Write-Host "Daily consumption already published"
+}
 
 # Send metrics to Graphite
 if ($Publish.IsPresent) {
@@ -40,6 +66,8 @@ if ($Publish.IsPresent) {
         @{ label = 'Length'; expression = { $_.RawContentLength } }
     )
 
-    $hourlyConsumptionMetrics = Get-GraphiteMetric -Metrics $hourlyConsumptionMetrics -Timestamp $timestamp -IntervalInSeconds 3600 # 1 hour
     Send-GraphiteMetric -Metrics $hourlyConsumptionMetrics | Select-Object $columns | ForEach-Object { if ($Detailed.IsPresent) { $_ | Out-Host } }
+    if ($dailyConsumptionMetrics) {
+        Send-GraphiteMetric -Metrics $dailyConsumptionMetrics | Select-Object $columns | ForEach-Object { if ($Detailed.IsPresent) { $_ | Out-Host } }
+    }
 }

@@ -23,10 +23,10 @@ See [here](https://github.com/stefanes/PSTibber#authentication) and [here](https
 
 Use [`tibber-cost.ps1`](tibber-cost.ps1) to get tomorrow's (or today's) energy prices and publish the data (if the `-Publish` switch is provided) in the following Graphite series:
 
-| Graphite series       | Measurement   | Resolution |
-| --------------------- | ------------- | ---------- |
-| `tibber.price.hourly` | `total`       | 1 hour     |
-| `tibber.price.level`  | _See below_   | 1 hour     |
+| Graphite series       | Measurement | Unit        | Resolution |
+| --------------------- | ----------- | ----------- | ---------- |
+| `tibber.price.hourly` | `total`     | SEK         | 1 hour     |
+| `tibber.price.level`  | `level`     | _See below_ | 1 hour     |
 
 The `tibber.price.level` series contains the price levels as defined [here](https://developer.tibber.com/docs/reference#pricelevel), translated into the following values:
 
@@ -83,23 +83,25 @@ New energy prices:
 
 Use [`tibber-consumption.ps1`](tibber-consumption.ps1) to get the billed consumption and publish the data (if the `-Publish` switch is provided) in the following Graphite series:
 
-| Graphite series             | Measurement   | Resolution |
-| ----------------------------| ------------- | ---------- |
-| `tibber.hourly.consumption` | `consumption` | 1 hour     |
-| `tibber.hourly.cost`        | `cost`        | 1 hour     |
+| Graphite series             | Measurement   | Unit | Resolution |
+| ----------------------------| ------------- | ---- | ---------- |
+| `tibber.hourly.consumption` | `consumption` | W    | 1 hour     |
+| `tibber.hourly.cost`        | `cost`        | SEK  | 1 hour     |
+| `tibber.daily.consumption`  | `consumption` | W    | 24 hour    |
+| `tibber.daily.cost`         | `cost`        | SEK  | 24 hour    |
 
 ### Get live measurements
 
 Use [`tibber-live.ps1`](tibber-live.ps1) to get live measurements and publish the data (if the `-Publish` switch is provided) in the following Graphite series:
 
-| Graphite series               | Measurement       | Resolution |
-| ----------------------------- | ----------------- | ---------- |
-| `tibber.live.power`           | `power`           | 10 seconds |
-| `tibber.live.powerProduction` | `powerProduction` | 10 seconds |
-| `tibber.live.voltagePhase1`   | `voltagePhase1`   | 10 seconds |
-| `tibber.live.voltagePhase2`   | `voltagePhase2`   | 10 seconds |
-| `tibber.live.voltagePhase3`   | `voltagePhase3`   | 10 seconds |
-| `tibber.live.currentL1`       | `currentL1`       | 10 seconds |
-| `tibber.live.currentL2`       | `currentL2`       | 10 seconds |
-| `tibber.live.currentL3`       | `currentL3`       | 10 seconds |
-| `tibber.live.signalStrength`  | `signalStrength`  | 2 minutes  |
+| Graphite series               | Measurement       | Unit | Resolution |
+| ----------------------------- | ----------------- | ---- | ---------- |
+| `tibber.live.power`           | `power`           | W    | 10 seconds |
+| `tibber.live.powerProduction` | `powerProduction` | W    | 10 seconds |
+| `tibber.live.voltagePhase1`   | `voltagePhase1`   | V    | 10 seconds |
+| `tibber.live.voltagePhase2`   | `voltagePhase2`   | V    | 10 seconds |
+| `tibber.live.voltagePhase3`   | `voltagePhase3`   | V    | 10 seconds |
+| `tibber.live.currentL1`       | `currentL1`       | A    | 10 seconds |
+| `tibber.live.currentL2`       | `currentL2`       | A    | 10 seconds |
+| `tibber.live.currentL3`       | `currentL3`       | A    | 10 seconds |
+| `tibber.live.signalStrength`  | `signalStrength`  | dB/% | 2 minutes  |
