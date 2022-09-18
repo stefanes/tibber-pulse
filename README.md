@@ -87,8 +87,8 @@ Use [`tibber-consumption.ps1`](tibber-consumption.ps1) to get the billed consump
 | ----------------------------| ------------- | ---- | ---------- |
 | `tibber.hourly.consumption` | `consumption` | Wh   | 1 hour     |
 | `tibber.hourly.cost`        | `cost`        | SEK  | 1 hour     |
-| `tibber.daily.consumption`  | `consumption` | Wh   | 24 hour    |
-| `tibber.daily.cost`         | `cost`        | SEK  | 24 hour    |
+| `tibber.daily.consumption`  | `consumption` | Wh   | 24 hours   |
+| `tibber.daily.cost`         | `cost`        | SEK  | 24 hours   |
 
 ### Get live measurements
 
