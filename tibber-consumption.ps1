@@ -13,23 +13,31 @@ $homeId = $myHome.id
 Write-Host "Home ID for '$($myHome.appNickname)': $homeId"
 
 # Get hourly consumption
-$hourlyConsumption = Get-TibberConsumption -HomeId $homeId
+$hourlyConsumptionMetrics = @()
+Get-TibberConsumption -HomeId $homeId -Last 6 | ForEach-Object {
+    Write-Host "Hourly consumption from $($_.from) to $($_.to):"
+    if ($_.consumption) {
+        Write-Host "    $($_.consumption * 1000) W"
+        Write-Host "    $(($_.cost).ToString("0.00")) $($_.currency)"
 
-Write-Host "New hourly consumption from $($hourlyConsumption.from) to $($hourlyConsumption.to):"
-Write-Host "    $($hourlyConsumption.consumption * 1000) W"
-Write-Host "    $($hourlyConsumption.cost) $($hourlyConsumption.currency)"
-
-$timestamp = Get-GraphiteTimestamp -Timestamp $hourlyConsumption.to
-$hourlyConsumptionMetrics = Get-GraphiteMetric -Metrics @(
-    @{
-        name  = "tibber.hourly.consumption"
-        value = $hourlyConsumption.consumption * 1000
+        $timestamp = Get-GraphiteTimestamp -Timestamp $_.to
+        $hourlyConsumptionMetrics += @(
+            @{
+                name  = "tibber.hourly.consumption"
+                value = $_.consumption * 1000
+                time  = $timestamp
+            }
+            @{
+                name  = "tibber.hourly.cost"
+                value = $_.cost
+                time  = $timestamp
+            }
+        )
+    } else {
+        Write-Host "    No data (yet)..."
     }
-    @{
-        name  = "tibber.hourly.cost"
-        value = $hourlyConsumption.cost
-    }
-) -Timestamp $timestamp -IntervalInSeconds 3600 # 1 hour
+}
+$hourlyConsumptionMetrics = Get-GraphiteMetric -Metrics $hourlyConsumptionMetrics -IntervalInSeconds 3600 # 1 hour
 
 # Get daily consumption
 $from = ([DateTime]::Now).AddDays(-1) | Get-Date -Hour 0 -Minute 0 -Second 0 -Millisecond 0
