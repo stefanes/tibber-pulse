@@ -71,8 +71,14 @@ if ($Publish.IsPresent) {
         @{ label = 'Length'; expression = { $_.RawContentLength } }
     )
 
-    Send-GraphiteMetric -Metrics $hourlyConsumptionMetrics | Select-Object $columns | ForEach-Object { if ($Detailed.IsPresent) { $_ | Out-Host } }
+    if ($hourlyConsumptionMetrics) {
+        Send-GraphiteMetric -Metrics $hourlyConsumptionMetrics | Select-Object $columns | ForEach-Object { if ($Detailed.IsPresent) { $_ | Out-Host } }
+        Write-Host "##[command][build.addbuildtag]hourly"
+        Write-Host "##vso[build.addbuildtag]hourly"
+    }
     if ($dailyConsumptionMetrics) {
         Send-GraphiteMetric -Metrics $dailyConsumptionMetrics | Select-Object $columns | ForEach-Object { if ($Detailed.IsPresent) { $_ | Out-Host } }
+        Write-Host "##[command][build.addbuildtag]daily"
+        Write-Host "##vso[build.addbuildtag]daily"
     }
 }

@@ -59,7 +59,9 @@ function Send-LiveMetricsToGraphite {
             @{ label = 'Length'; expression = { $_.RawContentLength } }
         )
 
-        Send-GraphiteMetric -Metrics $powerMetrics | Select-Object $columns | ForEach-Object { if ($Detailed.IsPresent) { $_ | Out-Host } }
+        if ($powerMetrics) {
+            Send-GraphiteMetric -Metrics $powerMetrics | Select-Object $columns | ForEach-Object { if ($Detailed.IsPresent) { $_ | Out-Host } }
+        }
         if ($signalStrengthMetrics) {
             Send-GraphiteMetric -Metrics $signalStrengthMetrics | Select-Object $columns | ForEach-Object { if ($Detailed.IsPresent) { $_ | Out-Host } }
         }
