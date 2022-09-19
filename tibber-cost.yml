@@ -24,7 +24,7 @@ resources:
 
 jobs:
   - job:
-    displayName: Tibber Live
+    displayName: Tibber Cost
     timeoutInMinutes: 10
     steps:
       - template: install-modules.yml@templates
