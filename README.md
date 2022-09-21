@@ -23,12 +23,12 @@ See [here](https://github.com/stefanes/PSTibber#authentication) and [here](https
 
 Use [`tibber-price.ps1`](tibber-price.ps1) to get tomorrow's (or today's) energy prices and publish the data (if the `-Publish` switch is provided) in the following Graphite series:
 
-| Graphite series       | Measurement | Unit        | Resolution |
-| --------------------- | ----------- | ----------- | ---------- |
-| `tibber.price.hourly` | `total`     | SEK         | 1h         |
-| `tibber.price.level`  | `level`     | _See below_ | 1h         |
+| Graphite series            | Measurement | Unit        | Resolution |
+| -------------------------- | ----------- | ----------- | ---------- |
+| `tibber.hourly.price`      | `total`     | SEK         | 1h         |
+| `tibber.hourly.priceLevel` | `level`     | _See below_ | 1h         |
 
-The `tibber.price.level` series contains the price levels as defined [here](https://developer.tibber.com/docs/reference#pricelevel), translated into the following values:
+The `tibber.hourly.priceLevel` series contains the price levels as defined [here](https://developer.tibber.com/docs/reference#pricelevel), translated into the following values:
 
 | Price level      | Value |
 | ---------------- | ----- |
@@ -38,10 +38,10 @@ The `tibber.price.level` series contains the price levels as defined [here](http
 | `EXPENSIVE`      | 40    |
 | `VERY_EXPENSIVE` | 50    |
 
-Tomorrow's energy prices:
+Tomorrow's energy prices, display in terminal and publish to Graphite:
 
 ```powershell
-PS> .\tibber-price.ps1 -Publish
+PS> .\tibber-price.ps1 -Publish -Detailed
 Home ID for 'Vitahuset': 96a14971-525a-4420-aae9-e5aedaa129ff
 New energy prices:
     1.2851 SEK at 09/10/2022 00:00:00 [VERY_CHEAP]
@@ -50,23 +50,17 @@ New energy prices:
     3.861 SEK at 09/10/2022 22:00:00 [NORMAL]
     2.8 SEK at 09/10/2022 23:00:00 [CHEAP]
 
-Content           : {"Invalid":0,"Published":24,"ValidationErrors":{}}
-...
-StatusCode        : 200
-StatusDescription : OK
-...
-RelationLink      : {}
+Status |  Published Invalid
+------ -  --------- -------
+   200 OK 24        0
 
 
-Content           : {"Invalid":0,"Published":24,"ValidationErrors":{}}
-...
-StatusCode        : 200
-StatusDescription : OK
-...
-RelationLink      : {}
+Status |  Published Invalid
+------ -  --------- -------
+   200 OK 24        0
 ```
 
-Today's energy prices:
+Today's energy prices (only display in terminal, do not publish to Graphite):
 
 ```powershell
 PS> .\tibber-price.ps1 -Today
@@ -111,24 +105,20 @@ Use [`tibber-live.ps1`](tibber-live.ps1) to get live measurements and publish th
 Recommended [`storage-schemas.conf`](https://graphite.readthedocs.io/en/latest/config-carbon.html#storage-schemas-conf) settings:
 
 ```ini
-[tibber.price]
-  pattern = ^tibber\.price\..*
-  retentions = 1h:1y
-
 [tibber.daily]
-  pattern = ^tibber\.daily\..*
-  retentions = 1d:1y
+  pattern    = ^tibber\.daily\..*
+  retentions = 1d:2y
 
 [tibber.hourly]
-  pattern = ^tibber\.hourly\..*
-  retentions = 1h:1y
+  pattern    = ^tibber\.hourly\..*
+  retentions = 1h:2y
 
 [tibber.live.signalStrength]
-  pattern = ^tibber\.live\.signalStrength$
-  retentions = 2m:1y
+  pattern    = ^tibber\.live\.signalStrength$
+  retentions = 2m:8w4d
 [tibber.live]
-  pattern = ^tibber\.live\..*
-  retentions = 10s:1y
+  pattern    = ^tibber\.live\..*
+  retentions = 10s:1w1d
 ```
 
 See [here](https://grafana.com/docs/grafana-cloud/data-configuration/metrics/metrics-graphite/http-api/#adjust-storage-schemasconf-and-storage-aggregationconf) for how to change the storage schemas using the config API.

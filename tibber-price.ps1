@@ -45,14 +45,14 @@ Get-TibberPriceInfo -HomeId $homeId -IncludeToday:$($Today.IsPresent) -IncludeTo
         }
     }
 
-    $startsAt = Get-GraphiteTimestamp -Timestamp $_.startsAt
+    $timestamp = Get-GraphiteTimestamp -Timestamp $_.startsAt
     $priceInfoMetrics += @{
         value = $_.total
-        time  = $startsAt
+        time  = $timestamp
     }
     $priceLevelMetrics += @{
         value = $levels.$($_.level)
-        time  = $startsAt
+        time  = $timestamp
     }
 }
 
@@ -61,16 +61,16 @@ if ($Publish.IsPresent) {
     $columns = @(
         @{ label = 'Status'; expression = { $_.StatusCode } }
         @{ label = '|'; expression = { $_.StatusDescription } }
-        @{ label = 'Published/Invalid'; expression = { "$(($_.Content | ConvertFrom-Json).Published)/$(($_.Content | ConvertFrom-Json).Invalid)" } }
-        @{ label = 'Length'; expression = { $_.RawContentLength } }
+        @{ label = 'Published'; expression = { "$(($_.Content | ConvertFrom-Json).Published)" } }
+        @{ label = 'Invalid'; expression = { "$(($_.Content | ConvertFrom-Json).Invalid)" } }
     )
 
     if ($priceInfoMetrics) {
-        $priceInfoMetrics = Get-GraphiteMetric -Metrics $priceInfoMetrics -Name 'tibber.price.hourly' -IntervalInSeconds 3600 # 1 hour
+        $priceInfoMetrics = Get-GraphiteMetric -Metrics $priceInfoMetrics -Name 'tibber.hourly.price' -IntervalInSeconds 3600 # 1 hour
         Send-GraphiteMetric -Metrics $priceInfoMetrics | Select-Object $columns | ForEach-Object { if ($Detailed.IsPresent) { $_ | Out-Host } }
     }
     if ($priceLevelMetrics) {
-        $priceLevelMetrics = Get-GraphiteMetric -Metrics $priceLevelMetrics -Name 'tibber.price.level' -IntervalInSeconds 3600 # 1 hour
+        $priceLevelMetrics = Get-GraphiteMetric -Metrics $priceLevelMetrics -Name 'tibber.hourly.priceLevel' -IntervalInSeconds 3600 # 1 hour
         Send-GraphiteMetric -Metrics $priceLevelMetrics | Select-Object $columns | ForEach-Object { if ($Detailed.IsPresent) { $_ | Out-Host } }
     }
 }

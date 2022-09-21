@@ -33,7 +33,8 @@ Get-TibberConsumption -HomeId $homeId -Last 6 | ForEach-Object {
                 time  = $timestamp
             }
         )
-    } else {
+    }
+    else {
         Write-Host "    No data (yet)..."
     }
 }
@@ -75,8 +76,8 @@ if ($Publish.IsPresent) {
     $columns = @(
         @{ label = 'Status'; expression = { $_.StatusCode } }
         @{ label = '|'; expression = { $_.StatusDescription } }
-        @{ label = 'Published/Invalid'; expression = { "$(($_.Content | ConvertFrom-Json).Published)/$(($_.Content | ConvertFrom-Json).Invalid)" } }
-        @{ label = 'Length'; expression = { $_.RawContentLength } }
+        @{ label = 'Published'; expression = { "$(($_.Content | ConvertFrom-Json).Published)" } }
+        @{ label = 'Invalid'; expression = { "$(($_.Content | ConvertFrom-Json).Invalid)" } }
     )
 
     if ($hourlyConsumptionMetrics) {
