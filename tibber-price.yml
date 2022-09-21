@@ -24,7 +24,7 @@ resources:
 
 jobs:
   - job:
-    displayName: Tibber Cost
+    displayName: Tibber Price
     timeoutInMinutes: 10
     steps:
       - template: install-modules.yml@templates
@@ -37,10 +37,10 @@ jobs:
 
       - task: PowerShell@2
         inputs:
-          filePath: $(Build.SourcesDirectory)/tibber-cost.ps1
+          filePath: $(Build.SourcesDirectory)/tibber-price.ps1
           arguments: -Publish -Detailed
           pwsh: true
-        displayName: Get cost metrics
+        displayName: Get price metrics
         retryCountOnTaskFailure: 3
         env:
           TIBBER_ACCESS_TOKEN: $(TIBBER_API_KEY)

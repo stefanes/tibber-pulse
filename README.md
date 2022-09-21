@@ -4,9 +4,9 @@ Scripts and [pipelines](https://dev.azure.com/stefanes/tibber-pulse/_build) for 
 
 | Pipeline | Build status |
 | ---------| ------------ |
-| [tibber-pulse](https://dev.azure.com/stefanes/tibber-pulse/_build?definitionId=199&_a=summary)       | [![Build Status](https://dev.azure.com/stefanes/tibber-pulse/_apis/build/status/tibber-cost?branchName=main)](https://dev.azure.com/stefanes/tibber-pulse/_build/latest?definitionId=199&branchName=main) |
-| [tibber-consumption](https://dev.azure.com/stefanes/tibber-pulse/_build?definitionId=201&_a=summary) | [![Build Status](https://dev.azure.com/stefanes/tibber-pulse/_apis/build/status/tibber-consumption?branchName=main)](https://dev.azure.com/stefanes/tibber-pulse/_build/latest?definitionId=201&branchName=main) |
-| [tibber-live](https://dev.azure.com/stefanes/tibber-pulse/_build?definitionId=200&_a=summary)        | [![Build Status](https://dev.azure.com/stefanes/tibber-pulse/_apis/build/status/stefanes.tibber-pulse?branchName=main)](https://dev.azure.com/stefanes/tibber-pulse/_build/latest?definitionId=200&branchName=main) |
+| [tibber-price](https://dev.azure.com/stefanes/tibber-pulse/_build?definitionId=199&_a=summary)       | [![Build Status](https://dev.azure.com/stefanes/tibber-pulse/_apis/build/status/tibber-price?repoName=stefanes%2Ftibber-pulse&branchName=main)](https://dev.azure.com/stefanes/tibber-pulse/_build/latest?definitionId=199&repoName=stefanes%2Ftibber-pulse&branchName=main) |
+| [tibber-consumption](https://dev.azure.com/stefanes/tibber-pulse/_build?definitionId=201&_a=summary) | [![Build Status](https://dev.azure.com/stefanes/tibber-pulse/_apis/build/status/tibber-consumption?repoName=stefanes%2Ftibber-pulse&branchName=main)](https://dev.azure.com/stefanes/tibber-pulse/_build/latest?definitionId=201&repoName=stefanes%2Ftibber-pulse&branchName=main)
+| [tibber-live](https://dev.azure.com/stefanes/tibber-pulse/_build?definitionId=200&_a=summary)        | [![Build Status](https://dev.azure.com/stefanes/tibber-pulse/_apis/build/status/tibber-live?repoName=stefanes%2Ftibber-pulse&branchName=main)](https://dev.azure.com/stefanes/tibber-pulse/_build/latest?definitionId=200&repoName=stefanes%2Ftibber-pulse&branchName=main) |
 
 ## Installation
 
@@ -21,12 +21,12 @@ See [here](https://github.com/stefanes/PSTibber#authentication) and [here](https
 
 ### Get today's or tomorrow's energy prices
 
-Use [`tibber-cost.ps1`](tibber-cost.ps1) to get tomorrow's (or today's) energy prices and publish the data (if the `-Publish` switch is provided) in the following Graphite series:
+Use [`tibber-price.ps1`](tibber-price.ps1) to get tomorrow's (or today's) energy prices and publish the data (if the `-Publish` switch is provided) in the following Graphite series:
 
 | Graphite series       | Measurement | Unit        | Resolution |
 | --------------------- | ----------- | ----------- | ---------- |
-| `tibber.price.hourly` | `total`     | SEK         | 1 hour     |
-| `tibber.price.level`  | `level`     | _See below_ | 1 hour     |
+| `tibber.price.hourly` | `total`     | SEK         | 1h         |
+| `tibber.price.level`  | `level`     | _See below_ | 1h         |
 
 The `tibber.price.level` series contains the price levels as defined [here](https://developer.tibber.com/docs/reference#pricelevel), translated into the following values:
 
@@ -41,7 +41,7 @@ The `tibber.price.level` series contains the price levels as defined [here](http
 Tomorrow's energy prices:
 
 ```powershell
-PS> .\tibber-cost.ps1 -Publish
+PS> .\tibber-price.ps1 -Publish
 Home ID for 'Vitahuset': 96a14971-525a-4420-aae9-e5aedaa129ff
 New energy prices:
     1.2851 SEK at 09/10/2022 00:00:00 [VERY_CHEAP]
@@ -69,7 +69,7 @@ RelationLink      : {}
 Today's energy prices:
 
 ```powershell
-PS> .\tibber-cost.ps1 -Today
+PS> .\tibber-price.ps1 -Today
 Home ID for 'Vitahuset': 96a14971-525a-4420-aae9-e5aedaa129ff
 New energy prices:
     1.1431 SEK at 09/09/2022 00:00:00 [VERY_CHEAP]
@@ -85,10 +85,10 @@ Use [`tibber-consumption.ps1`](tibber-consumption.ps1) to get the billed consump
 
 | Graphite series             | Measurement   | Unit | Resolution |
 | ----------------------------| ------------- | ---- | ---------- |
-| `tibber.hourly.consumption` | `consumption` | Wh   | 1 hour     |
-| `tibber.hourly.cost`        | `cost`        | SEK  | 1 hour     |
-| `tibber.daily.consumption`  | `consumption` | Wh   | 24 hours   |
-| `tibber.daily.cost`         | `cost`        | SEK  | 24 hours   |
+| `tibber.hourly.consumption` | `consumption` | Wh   | 1h         |
+| `tibber.hourly.cost`        | `cost`        | SEK  | 1h         |
+| `tibber.daily.consumption`  | `consumption` | Wh   | 1d         |
+| `tibber.daily.cost`         | `cost`        | SEK  | 1d         |
 
 ### Get live measurements
 
@@ -96,12 +96,39 @@ Use [`tibber-live.ps1`](tibber-live.ps1) to get live measurements and publish th
 
 | Graphite series               | Measurement       | Unit | Resolution |
 | ----------------------------- | ----------------- | ---- | ---------- |
-| `tibber.live.power`           | `power`           | W    | 10 seconds |
-| `tibber.live.powerProduction` | `powerProduction` | W    | 10 seconds |
-| `tibber.live.voltagePhase1`   | `voltagePhase1`   | V    | 10 seconds |
-| `tibber.live.voltagePhase2`   | `voltagePhase2`   | V    | 10 seconds |
-| `tibber.live.voltagePhase3`   | `voltagePhase3`   | V    | 10 seconds |
-| `tibber.live.currentL1`       | `currentL1`       | A    | 10 seconds |
-| `tibber.live.currentL2`       | `currentL2`       | A    | 10 seconds |
-| `tibber.live.currentL3`       | `currentL3`       | A    | 10 seconds |
-| `tibber.live.signalStrength`  | `signalStrength`  | dB/% | 2 minutes  |
+| `tibber.live.power`           | `power`           | W    | 10s        |
+| `tibber.live.powerProduction` | `powerProduction` | W    | 10s        |
+| `tibber.live.voltagePhase1`   | `voltagePhase1`   | V    | 10s        |
+| `tibber.live.voltagePhase2`   | `voltagePhase2`   | V    | 10s        |
+| `tibber.live.voltagePhase3`   | `voltagePhase3`   | V    | 10s        |
+| `tibber.live.currentL1`       | `currentL1`       | A    | 10s        |
+| `tibber.live.currentL2`       | `currentL2`       | A    | 10s        |
+| `tibber.live.currentL3`       | `currentL3`       | A    | 10s        |
+| `tibber.live.signalStrength`  | `signalStrength`  | dB/% | 2m         |
+
+## Graphite `storage-schemas.conf`
+
+Recommended [`storage-schemas.conf`](https://graphite.readthedocs.io/en/latest/config-carbon.html#storage-schemas-conf) settings:
+
+```ini
+[tibber.price]
+  pattern = ^tibber\.price\..*
+  retentions = 1h:1y
+
+[tibber.daily]
+  pattern = ^tibber\.daily\..*
+  retentions = 1d:1y
+
+[tibber.hourly]
+  pattern = ^tibber\.hourly\..*
+  retentions = 1h:1y
+
+[tibber.live.signalStrength]
+  pattern = ^tibber\.live\.signalStrength$
+  retentions = 2m:1y
+[tibber.live]
+  pattern = ^tibber\.live\..*
+  retentions = 10s:1y
+```
+
+See [here](https://grafana.com/docs/grafana-cloud/data-configuration/metrics/metrics-graphite/http-api/#adjust-storage-schemasconf-and-storage-aggregationconf) for how to change the storage schemas using the config API.
