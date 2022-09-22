@@ -1,8 +1,8 @@
 trigger: none
 
 schedules:
-  - cron: "30 * * * *"
-    displayName: At minute 30
+  - cron: "10 * * * *"
+    displayName: At minute 10
     branches:
       include:
         - main
@@ -38,7 +38,7 @@ jobs:
       - task: PowerShell@2
         inputs:
           filePath: $(Build.SourcesDirectory)/tibber-consumption.ps1
-          arguments: -Publish -Detailed
+          arguments: -IncludePrice -Today -Publish -Detailed
           pwsh: true
         displayName: Get consumption metrics
         retryCountOnTaskFailure: 3

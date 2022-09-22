@@ -1,5 +1,7 @@
 ﻿param (
+    [switch] $Now,
     [switch] $Today,
+    [switch] $Tomorrow,
     [switch] $Publish,
     [switch] $Detailed
 )
@@ -23,8 +25,14 @@ $levels = @{
     EXPENSIVE      = 40
     VERY_EXPENSIVE = 50
 }
-Write-Host "New energy prices:"
-Get-TibberPriceInfo -HomeId $homeId -IncludeToday:$($Today.IsPresent) -IncludeTomorrow:$(-Not $Today.IsPresent) -ExcludeCurrent | ForEach-Object {
+$splat = @{
+    HomeId          = $homeId
+    IncludeToday    = $Today.IsPresent
+    IncludeTomorrow = $Tomorrow.IsPresent
+    ExcludeCurrent  = $(-Not $Now.IsPresent)
+}
+Write-Host "Energy price:"
+Get-TibberPriceInfo @splat | ForEach-Object {
     $message = "    $($_.total) $($_.currency) at $($_.startsAt) [$($_.level)]"
     switch ($_.level) {
         # https://developer.tibber.com/docs/reference#pricelevel

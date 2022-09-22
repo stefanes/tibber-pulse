@@ -1,4 +1,8 @@
 ﻿param (
+    [switch] $IncludePrice,
+    [switch] $Now,
+    [switch] $Today,
+    [switch] $Tomorrow,
     [switch] $Publish,
     [switch] $Detailed
 )
@@ -39,6 +43,18 @@ Get-TibberConsumption -HomeId $homeId -Last 6 | ForEach-Object {
     }
 }
 $hourlyConsumptionMetrics = Get-GraphiteMetric -Metrics $hourlyConsumptionMetrics -IntervalInSeconds 3600 # 1 hour
+
+# Get current energy price
+if ($IncludePrice.IsPresent) {
+    $splat = @{
+        Now      = $Now.IsPresent
+        Today    = $Today.IsPresent
+        Tomorrow = $Tomorrow.IsPresent
+        Publish  = $Publish
+        Detailed = $Detailed
+    }
+    & $PSScriptRoot\tibber-price.ps1 @splat
+}
 
 # Get daily consumption
 $from = ([DateTime]::Now).AddDays(-1) | Get-Date -Hour 0 -Minute 0 -Second 0 -Millisecond 0
