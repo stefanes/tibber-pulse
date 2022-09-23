@@ -4,9 +4,10 @@ Scripts and [pipelines](https://dev.azure.com/stefanes/tibber-pulse/_build) for 
 
 | Pipeline | Build status |
 | ---------| ------------ |
-| [tibber-price](https://dev.azure.com/stefanes/tibber-pulse/_build?definitionId=199&_a=summary)       | [![Build Status](https://dev.azure.com/stefanes/tibber-pulse/_apis/build/status/tibber-price?repoName=stefanes%2Ftibber-pulse&branchName=main)](https://dev.azure.com/stefanes/tibber-pulse/_build/latest?definitionId=199&repoName=stefanes%2Ftibber-pulse&branchName=main) |
-| [tibber-consumption](https://dev.azure.com/stefanes/tibber-pulse/_build?definitionId=201&_a=summary) | [![Build Status](https://dev.azure.com/stefanes/tibber-pulse/_apis/build/status/tibber-consumption?repoName=stefanes%2Ftibber-pulse&branchName=main)](https://dev.azure.com/stefanes/tibber-pulse/_build/latest?definitionId=201&repoName=stefanes%2Ftibber-pulse&branchName=main)
-| [tibber-live](https://dev.azure.com/stefanes/tibber-pulse/_build?definitionId=200&_a=summary)        | [![Build Status](https://dev.azure.com/stefanes/tibber-pulse/_apis/build/status/tibber-live?repoName=stefanes%2Ftibber-pulse&branchName=main)](https://dev.azure.com/stefanes/tibber-pulse/_build/latest?definitionId=200&repoName=stefanes%2Ftibber-pulse&branchName=main) |
+| [tibber-price](https://dev.azure.com/stefanes/tibber-pulse/_build?definitionId=199&_a=summary)          | [![Build Status](https://dev.azure.com/stefanes/tibber-pulse/_apis/build/status/tibber-price?repoName=stefanes%2Ftibber-pulse&branchName=main)](https://dev.azure.com/stefanes/tibber-pulse/_build/latest?definitionId=199&repoName=stefanes%2Ftibber-pulse&branchName=main) |
+| [tibber-consumption-1h](https://dev.azure.com/stefanes/tibber-pulse/_build?definitionId=201&_a=summary) | [![Build Status](https://dev.azure.com/stefanes/tibber-pulse/_apis/build/status/tibber-consumption-1h?repoName=stefanes%2Ftibber-pulse&branchName=main)](https://dev.azure.com/stefanes/tibber-pulse/_build/latest?definitionId=201&repoName=stefanes%2Ftibber-pulse&branchName=main)
+| [tibber-consumption-1d](https://dev.azure.com/stefanes/tibber-pulse/_build?definitionId=202&_a=summary) | [![Build Status](https://dev.azure.com/stefanes/tibber-pulse/_apis/build/status/tibber-consumption-1d?repoName=stefanes%2Ftibber-pulse&branchName=main)](https://dev.azure.com/stefanes/tibber-pulse/_build/latest?definitionId=202&repoName=stefanes%2Ftibber-pulse&branchName=main)
+| [tibber-live](https://dev.azure.com/stefanes/tibber-pulse/_build?definitionId=200&_a=summary)           | [![Build Status](https://dev.azure.com/stefanes/tibber-pulse/_apis/build/status/tibber-live?repoName=stefanes%2Ftibber-pulse&branchName=main)](https://dev.azure.com/stefanes/tibber-pulse/_build/latest?definitionId=200&repoName=stefanes%2Ftibber-pulse&branchName=main) |
 
 ## Installation
 
@@ -43,12 +44,12 @@ Tomorrow's energy prices, display in terminal and publish to Graphite:
 ```powershell
 PS> .\tibber-price.ps1 -Publish -Detailed
 Home ID for 'Vitahuset': 96a14971-525a-4420-aae9-e5aedaa129ff
-New energy prices:
-    1.2851 SEK at 09/10/2022 00:00:00 [VERY_CHEAP]
-    1.2748 SEK at 09/10/2022 01:00:00 [VERY_CHEAP]
+Energy price:
+    0.7542 SEK at 09/23/2022 00:00:00 [VERY_CHEAP]
+    0.7113 SEK at 09/23/2022 01:00:00 [VERY_CHEAP]
     ...
-    3.861 SEK at 09/10/2022 22:00:00 [NORMAL]
-    2.8 SEK at 09/10/2022 23:00:00 [CHEAP]
+    1.0319 SEK at 09/23/2022 22:00:00 [VERY_CHEAP]
+    0.8517 SEK at 09/23/2022 23:00:00 [VERY_CHEAP]
 
 Status |  Published Invalid
 ------ -  --------- -------
@@ -65,12 +66,12 @@ Today's energy prices (only display in terminal, do not publish to Graphite):
 ```powershell
 PS> .\tibber-price.ps1 -Today
 Home ID for 'Vitahuset': 96a14971-525a-4420-aae9-e5aedaa129ff
-New energy prices:
-    1.1431 SEK at 09/09/2022 00:00:00 [VERY_CHEAP]
-    1.1176 SEK at 09/09/2022 01:00:00 [VERY_CHEAP]
+Energy price:
+    0.7542 SEK at 09/23/2022 00:00:00 [VERY_CHEAP]
+    0.7113 SEK at 09/23/2022 01:00:00 [VERY_CHEAP]
     ...
-    2.2321 SEK at 09/09/2022 22:00:00 [VERY_CHEAP]
-    1.1728 SEK at 09/09/2022 23:00:00 [VERY_CHEAP]
+    1.0319 SEK at 09/23/2022 22:00:00 [VERY_CHEAP]
+    0.8517 SEK at 09/23/2022 23:00:00 [VERY_CHEAP]
 ```
 
 ### Get billed consumption
@@ -83,6 +84,30 @@ Use [`tibber-consumption.ps1`](tibber-consumption.ps1) to get the billed consump
 | `tibber.hourly.cost`        | `cost`        | SEK  | 1h         |
 | `tibber.daily.consumption`  | `consumption` | Wh   | 1d         |
 | `tibber.daily.cost`         | `cost`        | SEK  | 1d         |
+
+Today's hourly energy consumption (last 24 hours):
+
+```powershell
+PS> .\tibber-consumption.ps1
+Home ID for 'Vitahuset': 96a14971-525a-4420-aae9-e5aedaa129ff
+Hourly consumption from 09/23/2022 02:00:00 to 09/23/2022 03:00:00:
+    3489 W
+    2,49 SEK
+...
+Hourly consumption from 09/23/2022 09:00:00 to 09/23/2022 10:00:00:
+    177 W
+    0,91 SEK
+```
+
+Today's total energy consumption:
+
+```powershell
+PS> .\tibber-consumption.ps1 -Daily
+Home ID for 'Vitahuset': 96a14971-525a-4420-aae9-e5aedaa129ff
+Daily consumption from 09/22/2022 00:00:00 to 09/23/2022 00:00:00:
+    29451 W
+    81,12 SEK
+```
 
 ### Get live measurements
 
@@ -100,6 +125,24 @@ Use [`tibber-live.ps1`](tibber-live.ps1) to get live measurements and publish th
 | `tibber.live.currentL3`       | `currentL3`       | A    | 10s        |
 | `tibber.live.signalStrength`  | `signalStrength`  | dB/% | 2m         |
 
+Live measurements until two minutes past the hour:
+
+```powershell
+PS> .\tibber-live.ps1
+Home ID for 'Vitahuset': 96a14971-525a-4420-aae9-e5aedaa129ff
+New GraphQL subscription created: 9d1860e8-4625-4cf9-b865-6737e2dcde9e
+Reading metrics until 2022-09-23 11:02...
+Live metrics at 09/23/2022 10:49:48:
+    power: 0
+    powerProduction: 480
+...
+Live metrics at 09/23/2022 11:02:08:
+    power: 0
+    powerProduction: 484
+Read 75 package(s) in 743.2731528 seconds
+GraphQL subscription stopped: 9d1860e8-4625-4cf9-b865-6737e2dcde9e
+```
+
 ## Graphite `storage-schemas.conf`
 
 Recommended [`storage-schemas.conf`](https://graphite.readthedocs.io/en/latest/config-carbon.html#storage-schemas-conf) settings:
@@ -108,7 +151,6 @@ Recommended [`storage-schemas.conf`](https://graphite.readthedocs.io/en/latest/c
 [tibber.daily]
   pattern    = ^tibber\.daily\..*
   retentions = 1d:2y
-
 [tibber.hourly]
   pattern    = ^tibber\.hourly\..*
   retentions = 1h:2y

@@ -1,8 +1,8 @@
 trigger: none
 
 schedules:
-  - cron: "10 * * * *"
-    displayName: At minute 10
+  - cron: "10 6 * * *"
+    displayName: At 06:10
     branches:
       include:
         - main
@@ -24,7 +24,7 @@ resources:
 
 jobs:
   - job:
-    displayName: Tibber Consumption
+    displayName: Tibber daily consumption
     timeoutInMinutes: 10
     steps:
       - template: install-modules.yml@templates
@@ -38,10 +38,10 @@ jobs:
       - task: PowerShell@2
         inputs:
           filePath: $(Build.SourcesDirectory)/tibber-consumption.ps1
-          arguments: -IncludePrice -Today -Publish -Detailed
+          arguments: -Daily -IncludePrice -Today -Publish -Detailed
           pwsh: true
-        displayName: Get consumption metrics
-        retryCountOnTaskFailure: 3
+        displayName: Get daily consumption metrics
+        retryCountOnTaskFailure: 10 # The maximum allowed number of attempts is 10
         env:
           TIBBER_ACCESS_TOKEN: $(TIBBER_API_KEY)
           GRAPHITE_ACCESS_TOKEN: $(GF_API_KEY)

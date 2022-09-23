@@ -8,7 +8,7 @@ function Send-LiveMetricsToGraphite {
         [Object] $MetricPoint
     )
 
-    Write-Host "New live metrics at $($MetricPoint.payload.data.liveMeasurement.timestamp):"
+    Write-Host "Live metrics at $($MetricPoint.payload.data.liveMeasurement.timestamp):"
 
     # Get power metrics
     $timestamp = Get-GraphiteTimestamp -Timestamp $MetricPoint.payload.data.liveMeasurement.timestamp
@@ -42,7 +42,7 @@ function Send-LiveMetricsToGraphite {
     $value = $MetricPoint.payload.data.liveMeasurement.signalStrength
     if ($value) {
         if ($Detailed.IsPresent) {
-            Write-Host "    signalStrength: $value"
+            Write-Host "    signalStrength: $value" -ForegroundColor White
         }
         $signalStrengthMetrics = Get-GraphiteMetric -Metrics @{
             name  = "tibber.live.signalStrength"
@@ -91,10 +91,10 @@ Write-Host "New GraphQL subscription created: $($subscription.Id)"
 # Read data stream
 $readUntil = ([DateTime]::Now).AddHours(1) | Get-Date -Minute 2 -Second 0 -Millisecond 0
 Write-Host "Reading metrics until $($readUntil.ToString('yyyy-MM-dd HH:mm'))..."
-$result = Read-TibberWebSocket -Connection $connection -Callback ${function:Send-LiveMetricsToGraphite} -ReadUntil $readUntil -Verbose
+$result = Read-TibberWebSocket -Connection $connection -Callback ${function:Send-LiveMetricsToGraphite} -ReadUntil $readUntil
 Write-Host "Read $($result.NumberOfPackages) package(s) in $($result.ElapsedTimeInSeconds) seconds"
 
 # Unregister subscription and close down the WebSocket connection
 Unregister-TibberLiveMeasurementSubscription -Connection $connection -Subscription $subscription
-Write-Host "New GraphQL subscription stopped: $($subscription.Id)"
+Write-Host "GraphQL subscription stopped: $($subscription.Id)"
 Disconnect-TibberWebSocket -Connection $connection
