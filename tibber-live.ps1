@@ -1,4 +1,5 @@
 ﻿param (
+    [string] $TimeZone = [TimeZoneInfo]::Local.Id,
     [switch] $Publish,
     [switch] $Detailed
 )
@@ -8,10 +9,12 @@ function Send-LiveMetricsToGraphite {
         [Object] $MetricPoint
     )
 
-    Write-Host "Live metrics at $($MetricPoint.payload.data.liveMeasurement.timestamp):"
+    $tibberTimestamp = $MetricPoint.payload.data.liveMeasurement.timestamp
+    $time = ([TimeZoneInfo]::ConvertTime([DateTime]::Parse($tibberTimestamp), [TimeZoneInfo]::FindSystemTimeZoneById($TimeZone))).ToString('yyyy-MM-dd HH:mm')
+    Write-Host "Live metrics at $time ($TimeZone):"
 
     # Get power metrics
-    $timestamp = Get-GraphiteTimestamp -Timestamp $MetricPoint.payload.data.liveMeasurement.timestamp
+    $timestamp = Get-GraphiteTimestamp -Timestamp $tibberTimestamp
     $powerMetrics = @()
     $global:fields | ForEach-Object {
         $value = $MetricPoint.payload.data.liveMeasurement.$_
@@ -91,7 +94,7 @@ Write-Host "New GraphQL subscription created: $($subscription.Id)"
 
 # Read data stream
 $readUntil = ([DateTime]::Now).AddHours(1) | Get-Date -Minute 2 -Second 0 -Millisecond 0
-Write-Host "Reading metrics until $($readUntil.ToString('yyyy-MM-dd HH:mm'))..."
+Write-Host "Reading metrics until $($readUntil.ToString('yyyy-MM-dd HH:mm')) ($([TimeZoneInfo]::Local.Id))..."
 $result = Read-TibberWebSocket -Connection $connection -Callback ${function:Send-LiveMetricsToGraphite} -ReadUntil $readUntil
 Write-Host "Read $($result.NumberOfPackages) package(s) in $($result.ElapsedTimeInSeconds) seconds"
 

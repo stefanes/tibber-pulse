@@ -1,4 +1,5 @@
 ﻿param (
+    [string] $TimeZone = [TimeZoneInfo]::Local.Id,
     [switch] $Now,
     [switch] $Today,
     [switch] $Tomorrow,
@@ -31,9 +32,11 @@ $splat = @{
     IncludeTomorrow = $Tomorrow.IsPresent
     ExcludeCurrent  = $(-Not $Now.IsPresent)
 }
-Write-Host "Energy price:"
+Write-Host "Energy price ($TimeZone):"
 Get-TibberPriceInfo @splat | ForEach-Object {
-    $message = "    $($_.total) $($_.currency) at $($_.startsAt) [$($_.level)]"
+    $tibberTimestamp = $_.startsAt
+    $time = ([TimeZoneInfo]::ConvertTime([DateTime]::Parse($tibberTimestamp), [TimeZoneInfo]::FindSystemTimeZoneById($TimeZone))).ToString('yyyy-MM-dd HH:mm')
+    $message = "    $($_.total) $($_.currency) at $time [$($_.level)]"
     switch ($_.level) {
         # https://developer.tibber.com/docs/reference#pricelevel
         'VERY_CHEAP' {
@@ -53,7 +56,7 @@ Get-TibberPriceInfo @splat | ForEach-Object {
         }
     }
 
-    $timestamp = Get-GraphiteTimestamp -Timestamp $_.startsAt
+    $timestamp = Get-GraphiteTimestamp -Timestamp $tibberTimestamp
     $priceInfoMetrics += @{
         value = $_.total
         time  = $timestamp
