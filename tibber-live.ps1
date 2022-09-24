@@ -13,16 +13,7 @@ function Send-LiveMetricsToGraphite {
     # Get power metrics
     $timestamp = Get-GraphiteTimestamp -Timestamp $MetricPoint.payload.data.liveMeasurement.timestamp
     $powerMetrics = @()
-    @(
-        'power'
-        'powerProduction'
-        'voltagePhase1'
-        'voltagePhase2'
-        'voltagePhase3'
-        'currentL1'
-        'currentL2'
-        'currentL3'
-    ) | ForEach-Object {
+    $global:fields | ForEach-Object {
         $value = $MetricPoint.payload.data.liveMeasurement.$_
         if (-Not $value) {
             $value = 0.0
@@ -42,7 +33,7 @@ function Send-LiveMetricsToGraphite {
     $value = $MetricPoint.payload.data.liveMeasurement.signalStrength
     if ($value) {
         if ($Detailed.IsPresent) {
-            Write-Host "    signalStrength: $value" -ForegroundColor White
+            Write-Host "    signalStrength: $value" -ForegroundColor DarkGray
         }
         $signalStrengthMetrics = Get-GraphiteMetric -Metrics @{
             name  = "tibber.live.signalStrength"
@@ -68,11 +59,21 @@ function Send-LiveMetricsToGraphite {
     }
 }
 
-# Enable publish to Graphite
+# Publish to Graphite
 $env:GRAPHITE_PUBLISH = $false
 if ($Publish.IsPresent) {
     $env:GRAPHITE_PUBLISH = $true
 }
+$global:fields = @(
+    'power'
+    'powerProduction'
+    'voltagePhase1'
+    'voltagePhase2'
+    'voltagePhase3'
+    'currentL1'
+    'currentL2'
+    'currentL3'
+)
 
 # Import required modules
 Import-Module -Name PSTibber -Force -PassThru
@@ -85,7 +86,7 @@ Write-Host "Home ID for '$($myHome.appNickname)': $homeId"
 
 # Connect WebSocket and register a subscription
 $connection = Connect-TibberWebSocket
-$subscription = Register-TibberLiveMeasurementSubscription -Connection $connection -HomeId $homeId
+$subscription = Register-TibberLiveMeasurementSubscription -Connection $connection -HomeId $homeId -Fields ('timestamp', $global:fields, 'signalStrength')
 Write-Host "New GraphQL subscription created: $($subscription.Id)"
 
 # Read data stream
