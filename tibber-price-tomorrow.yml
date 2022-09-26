@@ -1,8 +1,8 @@
 trigger: none
 
 schedules:
-  - cron: "10 4 * * *"
-    displayName: At 04:10
+  - cron: "0 13 * * *"
+    displayName: At 13:00 # UTC = 14 CET/15 CEST
     branches:
       include:
         - main
@@ -24,7 +24,7 @@ resources:
 
 jobs:
   - job:
-    displayName: Tibber daily consumption
+    displayName: Tibber tomorrow's price info
     timeoutInMinutes: 10
     steps:
       - template: install-modules.yml@templates
@@ -37,10 +37,10 @@ jobs:
 
       - task: PowerShell@2
         inputs:
-          filePath: $(Build.SourcesDirectory)/tibber-consumption.ps1
-          arguments: -Daily -Publish -Detailed -TimeZone 'W. Europe Standard Time'
+          filePath: $(Build.SourcesDirectory)/tibber-price.ps1
+          arguments: -Tomorrow -Publish -Detailed -TimeZone 'W. Europe Standard Time'
           pwsh: true
-        displayName: Get daily consumption metrics
+        displayName: Get tomorrow's price info metrics
         retryCountOnTaskFailure: 10 # The maximum allowed number of attempts is 10
         env:
           TIBBER_ACCESS_TOKEN: $(TIBBER_API_KEY)

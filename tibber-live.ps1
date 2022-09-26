@@ -69,6 +69,9 @@ if ($Publish.IsPresent) {
 }
 $global:fields = @(
     'power'
+    'accumulatedConsumption'
+    'accumulatedConsumptionLastHour'
+    'accumulatedCost'
     'powerProduction'
     'voltagePhase1'
     'voltagePhase2'

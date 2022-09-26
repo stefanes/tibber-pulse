@@ -1,9 +1,5 @@
 ﻿param (
     [switch] $Daily,
-    [switch] $IncludePrice,
-    [switch] $Now,
-    [switch] $Today,
-    [switch] $Tomorrow,
     [switch] $Publish,
     [switch] $Detailed,
     [string] $TimeZone = [TimeZoneInfo]::Local.Id
@@ -77,19 +73,6 @@ else {
     else {
         Write-Warning "No daily consumption available"
     }
-}
-
-# Get energy price
-if ($IncludePrice.IsPresent) {
-    $splat = @{
-        Now      = $Now.IsPresent
-        Today    = $Today.IsPresent
-        Tomorrow = $Tomorrow.IsPresent
-        Publish  = $Publish
-        Detailed = $Detailed
-        TimeZone = $TimeZone
-    }
-    & $PSScriptRoot\tibber-price.ps1 @splat
 }
 
 # Send metrics to Graphite
