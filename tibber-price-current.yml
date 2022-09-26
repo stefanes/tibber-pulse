@@ -1,8 +1,8 @@
 trigger: none
 
 schedules:
-  - cron: "10 * * * *"
-    displayName: At minute 10
+  - cron: "0 * * * *"
+    displayName: At minute 0
     branches:
       include:
         - main
