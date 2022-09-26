@@ -87,6 +87,7 @@ if ($IncludePrice.IsPresent) {
         Tomorrow = $Tomorrow.IsPresent
         Publish  = $Publish
         Detailed = $Detailed
+        TimeZone = $TimeZone
     }
     & $PSScriptRoot\tibber-price.ps1 @splat
 }
