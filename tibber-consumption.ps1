@@ -1,12 +1,12 @@
 ﻿param (
-    [string] $TimeZone = [TimeZoneInfo]::Local.Id,
     [switch] $Daily,
     [switch] $IncludePrice,
     [switch] $Now,
     [switch] $Today,
     [switch] $Tomorrow,
     [switch] $Publish,
-    [switch] $Detailed
+    [switch] $Detailed,
+    [string] $TimeZone = [TimeZoneInfo]::Local.Id
 )
 
 # Import required modules
@@ -46,7 +46,7 @@ if (-Not $Daily.IsPresent) {
             )
         }
         else {
-            Write-Host "    No data (yet)..."
+            Write-Host "    No data"
         }
     }
     $hourlyConsumptionMetrics = Get-GraphiteMetric -Metrics $hourlyConsumptionMetrics -IntervalInSeconds 3600 # 1 hour
@@ -54,16 +54,15 @@ if (-Not $Daily.IsPresent) {
 else {
     # Get daily consumption
     $dailyConsumption = Get-TibberConsumption -HomeId $homeId -Resolution DAILY
-
-    $tibberTimestamp = $dailyConsumption.to
-    $to = ([TimeZoneInfo]::ConvertTime([DateTime]::Parse($tibberTimestamp), [TimeZoneInfo]::FindSystemTimeZoneById($TimeZone))).ToString('yyyy-MM-dd HH:mm')
-    $from = ([TimeZoneInfo]::ConvertTime([DateTime]::Parse($dailyConsumption.from), [TimeZoneInfo]::FindSystemTimeZoneById($TimeZone))).ToString('yyyy-MM-dd HH:mm')
-    Write-Host "Daily consumption from $from to $to ($TimeZone):"
-    Write-Host "    $($dailyConsumption.consumption * 1000) W"
-    Write-Host "    $(($dailyConsumption.cost).ToString("0.00")) $($dailyConsumption.currency)"
-
-    $timestamp = Get-GraphiteTimestamp -Timestamp $tibberTimestamp
     if ($dailyConsumption) {
+        $tibberTimestamp = $dailyConsumption.to
+        $to = ([TimeZoneInfo]::ConvertTime([DateTime]::Parse($tibberTimestamp), [TimeZoneInfo]::FindSystemTimeZoneById($TimeZone))).ToString('yyyy-MM-dd HH:mm')
+        $from = ([TimeZoneInfo]::ConvertTime([DateTime]::Parse($dailyConsumption.from), [TimeZoneInfo]::FindSystemTimeZoneById($TimeZone))).ToString('yyyy-MM-dd HH:mm')
+        Write-Host "Daily consumption from $from to $to ($TimeZone):"
+        Write-Host "    $($dailyConsumption.consumption * 1000) W"
+        Write-Host "    $(($dailyConsumption.cost).ToString("0.00")) $($dailyConsumption.currency)"
+
+        $timestamp = Get-GraphiteTimestamp -Timestamp $tibberTimestamp
         $dailyConsumptionMetrics = Get-GraphiteMetric -Metrics @(
             @{
                 name  = "tibber.daily.consumption"

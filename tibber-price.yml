@@ -38,7 +38,7 @@ jobs:
       - task: PowerShell@2
         inputs:
           filePath: $(Build.SourcesDirectory)/tibber-price.ps1
-          arguments: -Tomorrow -Publish -Detailed
+          arguments: -Tomorrow -Publish -Detailed -TimeZone 'W. Europe Standard Time'
           pwsh: true
         displayName: Get price info metrics
         retryCountOnTaskFailure: 10 # The maximum allowed number of attempts is 10

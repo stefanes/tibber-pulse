@@ -1,10 +1,10 @@
 ﻿param (
-    [string] $TimeZone = [TimeZoneInfo]::Local.Id,
     [switch] $Now,
     [switch] $Today,
     [switch] $Tomorrow,
     [switch] $Publish,
-    [switch] $Detailed
+    [switch] $Detailed,
+    [string] $TimeZone = [TimeZoneInfo]::Local.Id
 )
 
 # Import required modules
@@ -18,7 +18,6 @@ Write-Host "Home ID for '$($myHome.appNickname)': $homeId"
 
 # Get price info
 $priceInfoMetrics = @()
-$priceLevelMetrics = @()
 $levels = @{
     VERY_CHEAP     = 10
     CHEAP          = 20
@@ -57,14 +56,16 @@ Get-TibberPriceInfo @splat | ForEach-Object {
     }
 
     $timestamp = Get-GraphiteTimestamp -Timestamp $tibberTimestamp
-    $priceInfoMetrics += @{
-        value = $_.total
-        time  = $timestamp
-    }
-    $priceLevelMetrics += @{
-        value = $levels.$($_.level)
-        time  = $timestamp
-    }
+    $priceInfoMetrics += @(
+        @{
+            value = $_.total
+            time  = $timestamp
+        }
+        @{
+            value = $levels.$($_.level)
+            time  = $timestamp
+        }
+    )
 }
 
 # Send metrics to Graphite
@@ -79,9 +80,5 @@ if ($Publish.IsPresent) {
     if ($priceInfoMetrics) {
         $priceInfoMetrics = Get-GraphiteMetric -Metrics $priceInfoMetrics -Name 'tibber.hourly.price' -IntervalInSeconds 3600 # 1 hour
         Send-GraphiteMetric -Metrics $priceInfoMetrics | Select-Object $columns | ForEach-Object { if ($Detailed.IsPresent) { $_ | Out-Host } }
-    }
-    if ($priceLevelMetrics) {
-        $priceLevelMetrics = Get-GraphiteMetric -Metrics $priceLevelMetrics -Name 'tibber.hourly.priceLevel' -IntervalInSeconds 3600 # 1 hour
-        Send-GraphiteMetric -Metrics $priceLevelMetrics | Select-Object $columns | ForEach-Object { if ($Detailed.IsPresent) { $_ | Out-Host } }
     }
 }

@@ -74,12 +74,12 @@ Energy price (W. Europe Standard Time):
     0.8517 SEK at 09/23/2022 23:00:00 [VERY_CHEAP]
 ```
 
-### Get billed consumption
+### Get hourly/daily energy consumption
 
 Use [`tibber-consumption.ps1`](tibber-consumption.ps1) to get the billed consumption and publish the data (if the `-Publish` switch is provided) in the following Graphite series:
 
 | Graphite series             | Measurement   | Unit | Resolution |
-| ----------------------------| ------------- | ---- | ---------- |
+| --------------------------- | ------------- | ---- | ---------- |
 | `tibber.hourly.consumption` | `consumption` | Wh   | 1h         |
 | `tibber.hourly.cost`        | `cost`        | SEK  | 1h         |
 | `tibber.daily.consumption`  | `consumption` | Wh   | 1d         |
@@ -100,12 +100,48 @@ From 09/23/2022 09:00:00 to 09/23/2022 10:00:00 (W. Europe Standard Time):
     0,91 SEK
 ```
 
-Today's total energy consumption:
+Yesterday's total energy consumption:
 
 ```powershell
 PS> .\tibber-consumption.ps1 -Daily
 Home ID for 'Vitahuset': 96a14971-525a-4420-aae9-e5aedaa129ff
 Daily consumption from 09/22/2022 00:00:00 to 09/23/2022 00:00:00 (W. Europe Standard Time):
+    29451 W
+    81,12 SEK
+```
+
+### Get hourly/daily energy production
+
+Use [`tibber-production.ps1`](tibber-production.ps1) to get the billed production and publish the data (if the `-Publish` switch is provided) in the following Graphite series:
+
+| Graphite series            | Measurement  | Unit | Resolution |
+| -------------------------- | ------------ | ---- | ---------- |
+| `tibber.hourly.production` | `production` | Wh   | 1h         |
+| `tibber.hourly.profit`     | `profit`     | SEK  | 1h         |
+| `tibber.daily.production`  | `production` | Wh   | 1d         |
+| `tibber.daily.profit`      | `profit`     | SEK  | 1d         |
+
+Today's hourly energy production (last 24 hours):
+
+```powershell
+PS> .\tibber-production.ps1
+Home ID for 'Vitahuset': 96a14971-525a-4420-aae9-e5aedaa129ff
+Hourly production (W. Europe Standard Time)...
+From 09/23/2022 02:00:00 to 09/23/2022 03:00:00 (W. Europe Standard Time):
+    3489 W
+    2,49 SEK
+...
+From 09/23/2022 09:00:00 to 09/23/2022 10:00:00 (W. Europe Standard Time):
+    177 W
+    0,91 SEK
+```
+
+Yesterday's total energy production:
+
+```powershell
+PS> .\tibber-production.ps1 -Daily
+Home ID for 'Vitahuset': 96a14971-525a-4420-aae9-e5aedaa129ff
+Daily production from 09/22/2022 00:00:00 to 09/23/2022 00:00:00 (W. Europe Standard Time):
     29451 W
     81,12 SEK
 ```

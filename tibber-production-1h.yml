@@ -1,8 +1,8 @@
 trigger: none
 
 schedules:
-  - cron: "0 * * * *"
-    displayName: At minute 0
+  - cron: "10 * * * *"
+    displayName: At minute 10
     branches:
       include:
         - main
@@ -24,8 +24,8 @@ resources:
 
 jobs:
   - job:
-    displayName: Tibber live measurements
-    timeoutInMinutes: 120
+    displayName: Tibber hourly production
+    timeoutInMinutes: 10
     steps:
       - template: install-modules.yml@templates
         parameters:
@@ -37,10 +37,10 @@ jobs:
 
       - task: PowerShell@2
         inputs:
-          filePath: $(Build.SourcesDirectory)/tibber-live.ps1
+          filePath: $(Build.SourcesDirectory)/tibber-production.ps1
           arguments: -Publish -Detailed -TimeZone 'W. Europe Standard Time'
           pwsh: true
-        displayName: Get live measurement metrics
+        displayName: Get hourly production metrics
         retryCountOnTaskFailure: 10 # The maximum allowed number of attempts is 10
         env:
           TIBBER_ACCESS_TOKEN: $(TIBBER_API_KEY)
