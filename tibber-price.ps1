@@ -58,15 +58,18 @@ Get-TibberPriceInfo @splat | ForEach-Object {
     $timestamp = Get-GraphiteTimestamp -Timestamp $tibberTimestamp
     $priceInfoMetrics += @(
         @{
+            name  = "tibber.hourly.price"
             value = $_.total
             time  = $timestamp
         }
         @{
+            name  = "tibber.hourly.priceLevel"
             value = $levels.$($_.level)
             time  = $timestamp
         }
     )
 }
+$priceInfoMetrics = Get-GraphiteMetric -Metrics $priceInfoMetrics -IntervalInSeconds 3600 # 1 hour
 
 # Send metrics to Graphite
 if ($Publish.IsPresent) {
@@ -78,7 +81,20 @@ if ($Publish.IsPresent) {
     )
 
     if ($priceInfoMetrics) {
-        $priceInfoMetrics = Get-GraphiteMetric -Metrics $priceInfoMetrics -Name 'tibber.hourly.price' -IntervalInSeconds 3600 # 1 hour
         Send-GraphiteMetric -Metrics $priceInfoMetrics | Select-Object $columns | ForEach-Object { if ($Detailed.IsPresent) { $_ | Out-Host } }
+
+        # Add build tags
+        if ($Now.IsPresent) {
+            Write-Host "##[command][build.addbuildtag]now"
+            Write-Host "##vso[build.addbuildtag]now"
+        }
+        if ($Today.IsPresent) {
+            Write-Host "##[command][build.addbuildtag]today"
+            Write-Host "##vso[build.addbuildtag]today"
+        }
+        if ($Tomorrow.IsPresent) {
+            Write-Host "##[command][build.addbuildtag]tomorrow"
+            Write-Host "##vso[build.addbuildtag]tomorrow"
+        }
     }
 }
