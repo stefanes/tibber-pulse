@@ -4,6 +4,23 @@
     [string] $TimeZone = [TimeZoneInfo]::Local.Id
 )
 
+function Get-ReadUntil {
+    param (
+        [DateTime] $Now = [DateTime]::Now
+    )
+
+    $addHours = 1
+    $minute = 2
+
+    if ($Now.Minute -le 30) {
+        $minute = 32
+        $addHours = 0
+    }
+
+    # Output date/time
+    $Now.AddHours($addHours) | Get-Date -Minute $minute -Second 0 -Millisecond 0
+}
+
 function Send-LiveMetricsToGraphite {
     param (
         [Object] $MetricPoint
@@ -96,7 +113,7 @@ $subscription = Register-TibberLiveMeasurementSubscription -Connection $connecti
 Write-Host "New GraphQL subscription created: $($subscription.Id)"
 
 # Read data stream
-$readUntil = ([DateTime]::Now).AddHours(1) | Get-Date -Minute 2 -Second 0 -Millisecond 0
+$readUntil = Get-ReadUntil
 Write-Host "Reading metrics until $($readUntil.ToString('yyyy-MM-dd HH:mm:ss')) ($([TimeZoneInfo]::Local.Id))..."
 $result = Read-TibberWebSocket -Connection $connection -Callback ${function:Send-LiveMetricsToGraphite} -ReadUntil $readUntil
 Write-Host "Read $($result.NumberOfPackages) package(s) in $($result.ElapsedTimeInSeconds) seconds"

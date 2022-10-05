@@ -1,6 +1,8 @@
 # Tibber Pulse
 
-Scripts and [pipelines](https://dev.azure.com/stefanes/tibber-pulse/_build) for tracking energy prices and consumption using [the Tibber GraphQL API](https://developer.tibber.com/docs/reference):
+Scripts and [pipelines](https://dev.azure.com/stefanes/tibber-pulse/_build) for publishing energy prices and consumption using [Grafana/Graphite](https://grafana.com/docs/grafana/latest/datasources/graphite/).
+
+![Grafana](docs/resources/grafana.png)
 
 | Highlighted pipelines | Build status |
 | --------------------- | ------------ |
