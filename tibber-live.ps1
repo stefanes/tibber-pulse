@@ -53,7 +53,7 @@ function Send-LiveMetricsToGraphite {
     $value = $MetricPoint.payload.data.liveMeasurement.signalStrength
     if ($value) {
         if ($Detailed.IsPresent) {
-            Write-Host "    signalStrength: $value" -ForegroundColor DarkGray
+            Write-Host "##[debug]    signalStrength: $value" -ForegroundColor DarkGray
         }
         $signalStrengthMetrics = Get-GraphiteMetric -Metrics @{
             name  = "tibber.live.signalStrength"
