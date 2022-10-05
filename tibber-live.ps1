@@ -28,7 +28,7 @@ function Send-LiveMetricsToGraphite {
 
     $tibberTimestamp = $MetricPoint.payload.data.liveMeasurement.timestamp
     $time = ([TimeZoneInfo]::ConvertTime([DateTime]::Parse($tibberTimestamp), [TimeZoneInfo]::FindSystemTimeZoneById($TimeZone))).ToString('yyyy-MM-dd HH:mm:ss')
-    Write-Host "Live metrics at $time ($TimeZone):"
+    Write-Host "Live metrics at ${time}:"
 
     # Get power metrics
     $timestamp = Get-GraphiteTimestamp -Timestamp $tibberTimestamp
