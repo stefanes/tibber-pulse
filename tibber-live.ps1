@@ -114,7 +114,8 @@ Write-Host "New GraphQL subscription created: $($subscription.Id)"
 
 # Read data stream
 $readUntil = Get-ReadUntil
-Write-Host "Reading metrics until $($readUntil.ToString('yyyy-MM-dd HH:mm:ss')) ($([TimeZoneInfo]::Local.Id))..."
+$time = ([TimeZoneInfo]::ConvertTime([DateTime]::Parse($readUntil), [TimeZoneInfo]::FindSystemTimeZoneById($TimeZone))).ToString('yyyy-MM-dd HH:mm:ss')
+Write-Host "Reading metrics until $time ($TimeZone):"
 $result = Read-TibberWebSocket -Connection $connection -Callback ${function:Send-LiveMetricsToGraphite} -ReadUntil $readUntil
 Write-Host "Read $($result.NumberOfPackages) package(s) in $($result.ElapsedTimeInSeconds) seconds"
 
