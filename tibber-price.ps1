@@ -1,6 +1,8 @@
-﻿param (
-    [switch] $Now,
+﻿[CmdletBinding(DefaultParameterSetName = 'Tomorrow')]
+param (
+    [Parameter(Mandatory = $true, ParameterSetName = 'Today')]
     [switch] $Today,
+    [Parameter(Mandatory = $true, ParameterSetName = 'Tomorrow')]
     [switch] $Tomorrow,
     [switch] $Publish,
     [switch] $Detailed,
@@ -17,43 +19,76 @@ $homeId = $myHome.id
 Write-Host "Home ID for '$($myHome.appNickname)': $homeId"
 
 # Get price info
-$priceInfoMetrics = @()
-$levels = @{
+$level = @{
     VERY_CHEAP     = 10
     CHEAP          = 20
     NORMAL         = 30
     EXPENSIVE      = 40
     VERY_EXPENSIVE = 50
 }
+$score = @{
+    LOW    = 10
+    MEDIUM = 30
+    HIGH   = 50
+}
 $splat = @{
     HomeId          = $homeId
     IncludeToday    = $Today.IsPresent
     IncludeTomorrow = $Tomorrow.IsPresent
-    ExcludeCurrent  = $(-Not $Now.IsPresent)
+    ExcludeCurrent  = $true
 }
+$priceInfo = Get-TibberPriceInfo @splat
+
+# Sort by 'total' and split into buckets
+$priceSorted = $priceInfo | Sort-Object -Property total -Descending
+$priceScoreLow = $priceSorted[0..7] # expensive
+$priceScoreMedium = $priceSorted[8..15] # normal
+$priceScoreHigh = $priceSorted[16..23] # cheap
+
+# Constrict price info metrics
 Write-Host "Energy price ($TimeZone):"
-Get-TibberPriceInfo @splat | ForEach-Object {
-    $tibberTimestamp = $_.startsAt
-    $time = ([TimeZoneInfo]::ConvertTime([DateTime]::Parse($tibberTimestamp), [TimeZoneInfo]::FindSystemTimeZoneById($TimeZone))).ToString('yyyy-MM-dd HH:mm')
-    $message = "    $($_.total) $($_.currency) at $time [$($_.level)]"
+$priceInfoMetrics = @()
+$priceInfo | ForEach-Object {
+    # Calculate price level
     switch ($_.level) {
         # https://developer.tibber.com/docs/reference#pricelevel
         'VERY_CHEAP' {
-            Write-Host $message -ForegroundColor Green
+            $priceLevel = $level.VERY_CHEAP
+            $color = [ConsoleColor]::DarkGreen
         }
         'CHEAP' {
-            Write-Host $message
+            $priceLevel = $level.CHEAP
+            $color = [ConsoleColor]::Green
         }
         'NORMAL' {
-            Write-Host $message -ForegroundColor Yellow
+            $priceLevel = $level.NORMAL
+            $color = [ConsoleColor]::Yellow
         }
         'EXPENSIVE' {
-            Write-Host $message -ForegroundColor Red
+            $priceLevel = $level.EXPENSIVE
+            $color = [ConsoleColor]::Red
         }
         'VERY_EXPENSIVE' {
-            Write-Host $message -ForegroundColor DarkRed
+            $priceLevel = $level.VERY_EXPENSIVE
+            $color = [ConsoleColor]::DarkRed
         }
     }
+
+    # Calculate price score
+    if ($priceScoreLow -contains $_) {
+        $priceScore = $score.LOW # expensive
+    }
+    elseif ($priceScoreMedium -contains $_) {
+        $priceScore = $score.MEDIUM # normal
+    }
+    elseif ($priceScoreHigh -contains $_) {
+        $priceScore = $score.HIGH # cheap
+    }
+
+    $tibberTimestamp = $_.startsAt
+    $time = ([TimeZoneInfo]::ConvertTime([DateTime]::Parse($tibberTimestamp), [TimeZoneInfo]::FindSystemTimeZoneById($TimeZone))).ToString('yyyy-MM-dd HH:mm')
+    $message = "    $($_.total.ToString('0.0000')) $($_.currency) at $time [level = $priceLevel] [score = $priceScore]"
+    Write-Host $message -ForegroundColor $color
 
     $timestamp = Get-GraphiteTimestamp -Timestamp $tibberTimestamp
     $priceInfoMetrics += @(
@@ -64,7 +99,12 @@ Get-TibberPriceInfo @splat | ForEach-Object {
         }
         @{
             name  = "tibber.hourly.priceLevel"
-            value = $levels.$($_.level)
+            value = $priceLevel
+            time  = $timestamp
+        }
+        @{
+            name  = "tibber.hourly.priceScore"
+            value = $priceScore
             time  = $timestamp
         }
     )
@@ -84,10 +124,6 @@ if ($Publish.IsPresent) {
         Send-GraphiteMetric -Metrics $priceInfoMetrics | Select-Object $columns | ForEach-Object { if ($Detailed.IsPresent) { $_ | Out-Host } }
 
         # Add build tags
-        if ($Now.IsPresent) {
-            Write-Host "##[command][build.addbuildtag]now"
-            Write-Host "##vso[build.addbuildtag]now"
-        }
         if ($Today.IsPresent) {
             Write-Host "##[command][build.addbuildtag]today"
             Write-Host "##vso[build.addbuildtag]today"

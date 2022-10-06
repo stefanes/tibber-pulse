@@ -29,6 +29,7 @@ Use [`tibber-price.ps1`](tibber-price.ps1) to get tomorrow's (or today's) energy
 | -------------------------- | ----------- | ----------- | ---------- |
 | `tibber.hourly.price`      | `total`     | SEK         | 1h         |
 | `tibber.hourly.priceLevel` | `level`     | _See below_ | 1h         |
+| `tibber.hourly.priceScore` | N/A         | _See below_ | 1h         |
 
 The `tibber.hourly.priceLevel` series contains the price levels as defined [here](https://developer.tibber.com/docs/reference#pricelevel), translated into the following values:
 
@@ -40,17 +41,25 @@ The `tibber.hourly.priceLevel` series contains the price levels as defined [here
 | `EXPENSIVE`      | 40    |
 | `VERY_EXPENSIVE` | 50    |
 
+The `tibber.hourly.priceScore` series contains a custom price score as defined below:
+
+| Price score | Value | Definition                              |
+| ----------- | ----- | --------------------------------------- |
+| `LOW`       | 10    | The 8 most expensive hours              |
+| `MEDIUM`    | 30    | The 8 hours not scoring `LOW` or `HIGH` |
+| `HIGH`      | 50    | The 8 cheapest hours                    |
+
 Tomorrow's energy prices, display in terminal and publish to Graphite:
 
 ```powershell
 PS> .\tibber-price.ps1 -Tomorrow -Publish -Detailed
 Home ID for 'Vitahuset': 96a14971-525a-4420-aae9-e5aedaa129ff
 Energy price (W. Europe Standard Time):
-    0.7542 SEK at 09/23/2022 00:00:00 [VERY_CHEAP]
-    0.7113 SEK at 09/23/2022 01:00:00 [VERY_CHEAP]
+    0.7542 SEK at 09/23/2022 00:00:00 [level = 10] [score = 50]
+    0.7113 SEK at 09/23/2022 01:00:00 [level = 10] [score = 50]
     ...
-    1.0319 SEK at 09/23/2022 22:00:00 [VERY_CHEAP]
-    0.8517 SEK at 09/23/2022 23:00:00 [VERY_CHEAP]
+    1.0319 SEK at 09/23/2022 22:00:00 [level = 10] [score = 50]
+    0.8517 SEK at 09/23/2022 23:00:00 [level = 10] [score = 50]
 
 Status |  Published Invalid
 ------ -  --------- -------
@@ -68,11 +77,11 @@ Today's energy prices (only display in terminal, do not publish to Graphite):
 PS> .\tibber-price.ps1 -Today
 Home ID for 'Vitahuset': 96a14971-525a-4420-aae9-e5aedaa129ff
 Energy price (W. Europe Standard Time):
-    0.7542 SEK at 09/23/2022 00:00:00 [VERY_CHEAP]
-    0.7113 SEK at 09/23/2022 01:00:00 [VERY_CHEAP]
+    0.7542 SEK at 09/23/2022 00:00:00 [level = 10] [score = 50]
+    0.7113 SEK at 09/23/2022 01:00:00 [level = 10] [score = 50]
     ...
-    1.0319 SEK at 09/23/2022 22:00:00 [VERY_CHEAP]
-    0.8517 SEK at 09/23/2022 23:00:00 [VERY_CHEAP]
+    1.0319 SEK at 09/23/2022 22:00:00 [level = 10] [score = 50]
+    0.8517 SEK at 09/23/2022 23:00:00 [level = 10] [score = 50]
 ```
 
 ### Get hourly/daily energy consumption
@@ -211,11 +220,11 @@ Running these scripts on e.g. Azure Pipelines agent will by default log UTC time
 PS> .\tibber-price.ps1 -Today -TimeZone 'India Standard Time'
 Home ID for 'Vitahuset': 96a14971-525a-4420-aae9-e5aedaa129ff
 Energy price (India Standard Time):
-    0.7542 SEK at 09/23/2022 03:30:00 [VERY_CHEAP]
-    0.7113 SEK at 09/23/2022 04:30:00 [VERY_CHEAP]
+    0.7542 SEK at 09/23/2022 03:30:00 [level = 10] [score = 50]
+    0.7113 SEK at 09/23/2022 04:30:00 [level = 10] [score = 50]
     ...
-    1.0319 SEK at 09/24/2022 01:30:00 [VERY_CHEAP]
-    0.8517 SEK at 09/24/2022 02:30:00 [VERY_CHEAP]
+    1.0319 SEK at 09/24/2022 01:30:00 [level = 10] [score = 50]
+    0.8517 SEK at 09/24/2022 02:30:00 [level = 10] [score = 50]
 ```
 
 List all available time zones:
