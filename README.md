@@ -1,6 +1,6 @@
 # Tibber Pulse
 
-Scripts and [pipelines](https://dev.azure.com/stefanes/tibber-pulse/_build) for publishing energy prices and consumption using [Grafana/Graphite](https://grafana.com/docs/grafana/latest/datasources/graphite/).
+Scripts and [pipelines](https://dev.azure.com/stefanes/tibber-pulse/_build) for publishing energy prices and consumption to [Grafana/Graphite](https://grafana.com/docs/grafana/latest/datasources/graphite/).
 
 ![Grafana](docs/resources/grafana.png)
 
