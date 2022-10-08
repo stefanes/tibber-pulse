@@ -5,13 +5,19 @@ param (
     [Parameter(Mandatory = $true, ParameterSetName = 'Tomorrow')]
     [switch] $Tomorrow,
     [switch] $Publish,
-    [switch] $Detailed,
     [string] $TimeZone = [TimeZoneInfo]::Local.Id
 )
 
 # Import required modules
 Import-Module -Name PSTibber -Force -PassThru
 Import-Module -Name PSGraphite -Force -PassThru
+Import-Module -Name $PSScriptRoot\tibber-pulse.psm1 -Force -PassThru
+
+# Set Log verbosity
+$dbgpref = $global:DebugPreference
+$vrbpref = $global:VerbosePreference
+$global:DebugPreference = $DebugPreference
+$global:VerbosePreference = $VerbosePreference
 
 # Get the home Id
 $myHome = (Get-TibberHome -Fields 'id', 'appNickname')[0]
@@ -113,17 +119,10 @@ $priceInfoMetrics = Get-GraphiteMetric -Metrics $priceInfoMetrics -IntervalInSec
 
 # Send metrics to Graphite
 if ($Publish.IsPresent) {
-    $columns = @(
-        @{ label = 'Status'; expression = { $_.StatusCode } }
-        @{ label = '|'; expression = { $_.StatusDescription } }
-        @{ label = 'Published'; expression = { "$(($_.Content | ConvertFrom-Json).Published)" } }
-        @{ label = 'Invalid'; expression = { "$(($_.Content | ConvertFrom-Json).Invalid)" } }
-    )
-
     if ($priceInfoMetrics) {
-        Send-GraphiteMetric -Metrics $priceInfoMetrics | Select-Object $columns | ForEach-Object { if ($Detailed.IsPresent) { $_ | Out-Host } }
+        Send-Metrics $priceInfoMetrics
 
-        # Add build tags
+        # Add build tag(s)
         if ($Today.IsPresent) {
             Write-Host "##[command][build.addbuildtag]today"
             Write-Host "##vso[build.addbuildtag]today"
@@ -134,3 +133,7 @@ if ($Publish.IsPresent) {
         }
     }
 }
+
+# Reset Log verbosity
+$global:DebugPreference = $dbgpref
+$global:VerbosePreference = $vrbpref

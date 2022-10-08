@@ -1,13 +1,20 @@
-﻿param (
+﻿[CmdletBinding()]
+param (
     [switch] $Daily,
     [switch] $Publish,
-    [switch] $Detailed,
     [string] $TimeZone = [TimeZoneInfo]::Local.Id
 )
 
 # Import required modules
 Import-Module -Name PSTibber -Force -PassThru
 Import-Module -Name PSGraphite -Force -PassThru
+Import-Module -Name $PSScriptRoot\tibber-pulse.psm1 -Force -PassThru
+
+# Set Log verbosity
+$dbgpref = $global:DebugPreference
+$vrbpref = $global:VerbosePreference
+$global:DebugPreference = $DebugPreference
+$global:VerbosePreference = $VerbosePreference
 
 # Get the home Id
 $myHome = (Get-TibberHome -Fields 'id', 'appNickname')[0]
@@ -77,25 +84,22 @@ else {
 
 # Send metrics to Graphite
 if ($Publish.IsPresent) {
-    $columns = @(
-        @{ label = 'Status'; expression = { $_.StatusCode } }
-        @{ label = '|'; expression = { $_.StatusDescription } }
-        @{ label = 'Published'; expression = { "$(($_.Content | ConvertFrom-Json).Published)" } }
-        @{ label = 'Invalid'; expression = { "$(($_.Content | ConvertFrom-Json).Invalid)" } }
-    )
-
     if ($hourlyConsumptionMetrics) {
-        Send-GraphiteMetric -Metrics $hourlyConsumptionMetrics | Select-Object $columns | ForEach-Object { if ($Detailed.IsPresent) { $_ | Out-Host } }
+        Send-Metrics $hourlyConsumptionMetrics
 
-        # Add build tags
+        # Add build tag(s)
         Write-Host "##[command][build.addbuildtag]hourly"
         Write-Host "##vso[build.addbuildtag]hourly"
     }
     if ($dailyConsumptionMetrics) {
-        Send-GraphiteMetric -Metrics $dailyConsumptionMetrics | Select-Object $columns | ForEach-Object { if ($Detailed.IsPresent) { $_ | Out-Host } }
+        Send-Metrics $dailyConsumptionMetrics
 
-        # Add build tags
+        # Add build tag(s)
         Write-Host "##[command][build.addbuildtag]daily"
         Write-Host "##vso[build.addbuildtag]daily"
     }
 }
+
+# Reset Log verbosity
+$global:DebugPreference = $dbgpref
+$global:VerbosePreference = $vrbpref

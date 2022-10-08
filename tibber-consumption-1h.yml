@@ -38,7 +38,7 @@ jobs:
       - task: PowerShell@2
         inputs:
           filePath: $(Build.SourcesDirectory)/tibber-consumption.ps1
-          arguments: -Publish -Detailed -TimeZone 'W. Europe Standard Time'
+          arguments: -Publish -TimeZone 'W. Europe Standard Time' -Verbose
           pwsh: true
         displayName: Get hourly consumption metrics
         retryCountOnTaskFailure: 10 # The maximum allowed number of attempts is 10

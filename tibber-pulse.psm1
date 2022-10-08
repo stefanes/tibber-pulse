@@ -15,11 +15,29 @@
     $Now.AddHours($addHours) | Get-Date -Minute $minute -Second 30 -Millisecond 0
 }
 
+function Send-Metrics {
+    param (
+        [Parameter(Position = 0)]
+        [string] $Metrics
+    )
+    $columns = '*'
+    if ($DebugPreference -eq [Management.Automation.ActionPreference]::SilentlyContinue) {
+        $columns = @(
+            @{ label = 'Status'; expression = { $_.StatusCode } }
+            @{ label = '|'; expression = { $_.StatusDescription } }
+            @{ label = 'Published'; expression = { "$(($_.Content | ConvertFrom-Json).Published)" } }
+            @{ label = 'Invalid'; expression = { "$(($_.Content | ConvertFrom-Json).Invalid)" } }
+        )
+    }
+
+    $outHost = $VerbosePreference -ne [Management.Automation.ActionPreference]::SilentlyContinue -Or $DebugPreference -ne [Management.Automation.ActionPreference]::SilentlyContinue
+    Send-GraphiteMetric -Metrics $Metrics | Select-Object $columns | ForEach-Object { if ($outHost) { $_ | Out-Host } }
+}
+
 function Send-LiveMetricsToGraphite {
     param (
         [Object] $MetricPoint,
         [bool] $Publish,
-        [bool] $Detailed,
         [string] $TimeZone
     )
 
@@ -36,7 +54,7 @@ function Send-LiveMetricsToGraphite {
             $value = 0.0
         }
 
-        if ($Detailed -Or $_ -like 'power*') {
+        if ($VerbosePreference -ne [Management.Automation.ActionPreference]::SilentlyContinue -Or $_ -like 'power*') {
             Write-Host "    $($_): $value"
         }
         $powerMetrics += @{
@@ -49,7 +67,7 @@ function Send-LiveMetricsToGraphite {
     # Get signal strength metrics
     $value = $MetricPoint.payload.data.liveMeasurement.signalStrength
     if ($value) {
-        if ($Detailed) {
+        if ($VerbosePreference -ne [Management.Automation.ActionPreference]::SilentlyContinue) {
             Write-Host "##[command]    signalStrength: $value" -ForegroundColor Blue
         }
         $signalStrengthMetrics = Get-GraphiteMetric -Metrics @{
@@ -60,18 +78,11 @@ function Send-LiveMetricsToGraphite {
 
     # Publish metrics to Graphite
     if ($Publish) {
-        $columns = @(
-            @{ label = 'Status'; expression = { $_.StatusCode } }
-            @{ label = '|'; expression = { $_.StatusDescription } }
-            @{ label = 'Published'; expression = { "$(($_.Content | ConvertFrom-Json).Published)" } }
-            @{ label = 'Invalid'; expression = { "$(($_.Content | ConvertFrom-Json).Invalid)" } }
-        )
-
         if ($powerMetrics) {
-            Send-GraphiteMetric -Metrics $powerMetrics | Select-Object $columns | ForEach-Object { if ($Detailed) { $_ | Out-Host } }
+            Send-Metrics $powerMetrics
         }
         if ($signalStrengthMetrics) {
-            Send-GraphiteMetric -Metrics $signalStrengthMetrics | Select-Object $columns | ForEach-Object { if ($Detailed) { $_ | Out-Host } }
+            Send-Metrics $signalStrengthMetrics
         }
     }
     else {

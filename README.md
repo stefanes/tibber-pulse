@@ -52,7 +52,7 @@ The `tibber.hourly.priceScore` series contains a custom price score as defined b
 Tomorrow's energy prices, display in terminal and publish to Graphite:
 
 ```powershell
-PS> .\tibber-price.ps1 -Tomorrow -Publish -Detailed
+PS> .\tibber-price.ps1 -Tomorrow -Publish -Verbose
 Home ID for 'Vitahuset': 96a14971-525a-4420-aae9-e5aedaa129ff
 Energy price (W. Europe Standard Time):
     0.7542 SEK at 09/23/2022 00:00:00 [level = 10] [score = 50]

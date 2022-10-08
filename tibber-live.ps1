@@ -1,6 +1,6 @@
-﻿param (
+﻿[CmdletBinding()]
+param (
     [switch] $Publish,
-    [switch] $Detailed,
     [string] $TimeZone = [TimeZoneInfo]::Local.Id
 )
 
@@ -24,6 +24,12 @@ Import-Module -Name PSTibber -Force -PassThru
 Import-Module -Name PSGraphite -Force -PassThru
 Import-Module -Name $PSScriptRoot\tibber-pulse.psm1 -Force -PassThru
 
+# Set Log verbosity
+$dbgpref = $global:DebugPreference
+$vrbpref = $global:VerbosePreference
+$global:DebugPreference = $DebugPreference
+$global:VerbosePreference = $VerbosePreference
+
 # Get the home Id
 $myHome = (Get-TibberHome -Fields 'id', 'appNickname')[0]
 $homeId = $myHome.id
@@ -37,7 +43,6 @@ Write-Host "New GraphQL subscription created: $($subscription.Id)"
 # Read data stream
 $callbackArguments = @(
     $Publish.IsPresent
-    $Detailed.IsPresent
     $TimeZone
 )
 $readUntil = Get-ReadUntil
@@ -50,3 +55,8 @@ Write-Host "Read $($result.NumberOfPackages) package(s) in $($result.ElapsedTime
 Unregister-TibberLiveMeasurementSubscription -Connection $connection -Subscription $subscription
 Write-Host "GraphQL subscription stopped: $($subscription.Id)"
 Disconnect-TibberWebSocket -Connection $connection
+
+# Reset Log verbosity
+$global:DebugPreference = $dbgpref
+$global:VerbosePreference = $vrbpref
+# $global:DebugPreference = $global:VerbosePreference = 'SilentlyContinue'
