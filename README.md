@@ -45,9 +45,9 @@ The `tibber.hourly.priceScore` series contains a custom price score as defined b
 
 | Price score | Value | Definition                              |
 | ----------- | ----- | --------------------------------------- |
-| `LOW`       | 10    | The 8 most expensive hours              |
-| `MEDIUM`    | 30    | The 8 hours not scoring `LOW` or `HIGH` |
-| `HIGH`      | 50    | The 8 cheapest hours                    |
+| `LOW`       | -10   | The 8 most expensive hours              |
+| `MEDIUM`    | 0     | The 8 hours not scoring `LOW` or `HIGH` |
+| `HIGH`      | 10    | The 8 cheapest hours                    |
 
 Tomorrow's energy prices, display in terminal and publish to Graphite:
 
