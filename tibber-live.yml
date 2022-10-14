@@ -35,30 +35,26 @@ jobs:
           allowPrerelease: false
           reinstall: true
 
-      # - task: PowerShell@2
-      #   inputs:
-      #     filePath: $(Build.SourcesDirectory)/tibber-live.ps1
-      #     arguments: -Publish -TimeZone 'W. Europe Standard Time' -Verbose
-      #     pwsh: true
-      #   displayName: Get live measurement metrics
-      #   retryCountOnTaskFailure: 10 # The maximum allowed number of attempts is 10
-      #   env:
-      #     TIBBER_ACCESS_TOKEN: $(TIBBER_API_KEY)
-      #     GRAPHITE_ACCESS_TOKEN: $(GF_API_KEY)
-
       - pwsh: |
+          $succeedWithIssues = $false
           while ($true) {
               try {
                   & "$(Build.SourcesDirectory)\tibber-live.ps1" -Publish -TimeZone 'W. Europe Standard Time' -Verbose
                   break # normal exit
               }
               catch {
-                  # failure, try again
-                  Write-Host "##vso[task.logissue type=warning]Keep calm and carry on..." -ForegroundColor DarkYellow
-                  Write-Host "##[error]$_" -ForegroundColor Red
+                  # failure, try again...
+                  Write-Host "##vso[task.logissue type=warning]Keep calm and carry on... [$_]"
+                  $succeedWithIssues = $true
               }
           }
+
+          if ($succeedWithIssues) {
+              Write-Host "##vso[task.complete result=SucceededWithIssues;]DONE"
+              exit 0
+          }
         displayName: Get live measurement metrics
+        workingDirectory: $(Build.SourcesDirectory)
         retryCountOnTaskFailure: 10 # The maximum allowed number of attempts is 10
         env:
           TIBBER_ACCESS_TOKEN: $(TIBBER_API_KEY)
