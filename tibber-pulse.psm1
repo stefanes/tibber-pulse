@@ -7,7 +7,7 @@
     $minute = 2
 
     if ($Now.Minute -lt 30) {
-        $minute = 32
+        $minute = 6
         $addHours = 0
     }
 
