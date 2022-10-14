@@ -60,7 +60,6 @@ jobs:
           }
         displayName: Get live measurement metrics
         retryCountOnTaskFailure: 10 # The maximum allowed number of attempts is 10
-        continueOnError: true
         env:
           TIBBER_ACCESS_TOKEN: $(TIBBER_API_KEY)
           GRAPHITE_ACCESS_TOKEN: $(GF_API_KEY)
