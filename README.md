@@ -1,12 +1,6 @@
 # Tibber Pulse
 
-Scripts and [pipelines](https://dev.azure.com/stefanes/tibber-pulse/_build) for publishing energy prices and consumption to [Grafana/Graphite](https://grafana.com/docs/grafana/latest/datasources/graphite/).
-
-| Highlighted pipelines | Build status |
-| --------------------- | ------------ |
-| [tibber-price-tomorrow](https://dev.azure.com/stefanes/tibber-pulse/_build?definitionId=199&_a=summary) | [![Build Status](https://dev.azure.com/stefanes/tibber-pulse/_apis/build/status/tibber-price-tomorrow?repoName=stefanes%2Ftibber-pulse&branchName=main)](https://dev.azure.com/stefanes/tibber-pulse/_build/latest?definitionId=199&repoName=stefanes%2Ftibber-pulse&branchName=main) |
-| [tibber-consumption-1h](https://dev.azure.com/stefanes/tibber-pulse/_build?definitionId=201&_a=summary) | [![Build Status](https://dev.azure.com/stefanes/tibber-pulse/_apis/build/status/tibber-consumption-1h?repoName=stefanes%2Ftibber-pulse&branchName=main)](https://dev.azure.com/stefanes/tibber-pulse/_build/latest?definitionId=201&repoName=stefanes%2Ftibber-pulse&branchName=main) |
-| [tibber-live](https://dev.azure.com/stefanes/tibber-pulse/_build?definitionId=200&_a=summary)           | [![Build Status](https://dev.azure.com/stefanes/tibber-pulse/_apis/build/status/tibber-live?repoName=stefanes%2Ftibber-pulse&branchName=main)](https://dev.azure.com/stefanes/tibber-pulse/_build/latest?definitionId=200&repoName=stefanes%2Ftibber-pulse&branchName=main)           |
+Scripts for publishing [Tibber](https://tibber.com/) energy prices and consumption to [Grafana/Graphite](https://grafana.com/docs/grafana/latest/datasources/graphite/).
 
 ![Grafana](docs/resources/graphql-ws.png)
 
