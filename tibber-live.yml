@@ -36,7 +36,7 @@ jobs:
           reinstall: true
 
       - pwsh: |
-          Import-Module -Name .\tibber-pulse.psm1 -Force -PassThru
+          Import-Module -Name .\tibber-pulse.psd1 -Force -PassThru
           Write-Host "##[command]Get-ReadUntil"
           $until = Get-ReadUntil
 

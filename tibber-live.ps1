@@ -1,12 +1,12 @@
 ﻿[CmdletBinding()]
 param (
-    [DateTime] $Until = [DateTime] 0,
+    [DateTime] $Until = [DateTime]::MinValue,
     [int] $ReadTimeout = 30,
     [switch] $Publish,
     [string] $TimeZone = [TimeZoneInfo]::Local.Id
 )
 
-if ($Until -ne [DateTime] 0 -And $Until -le [DateTime]::Now) {
+if ($Until -ne [DateTime]::MinValue -And $Until -le [DateTime]::Now) {
     Write-Host "##[section]Time provided is in the past, returning..." -ForegroundColor Green
     return
 }
@@ -29,7 +29,7 @@ $global:fields = @(
 # Import required modules
 Import-Module -Name PSTibber -Force -PassThru
 Import-Module -Name PSGraphite -Force -PassThru
-Import-Module -Name $PSScriptRoot\tibber-pulse.psm1 -Force -PassThru
+Import-Module -Name $PSScriptRoot\tibber-pulse.psd1 -Force -PassThru
 
 # Set Log verbosity
 $dbgpref = $global:DebugPreference
@@ -57,7 +57,7 @@ $splat = @{
     )
     TimeoutInSeconds     = $ReadTimeout
 }
-if ($Until -ne [DateTime] 0) {
+if ($Until -ne [DateTime]::MinValue) {
     $splat += @{
         ReadUntil = $Until
     }
