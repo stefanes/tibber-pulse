@@ -1,8 +1,15 @@
 ﻿[CmdletBinding()]
 param (
+    [DateTime] $Until = [DateTime] 0,
+    [int] $ReadTimeout = 30,
     [switch] $Publish,
     [string] $TimeZone = [TimeZoneInfo]::Local.Id
 )
+
+if ($Until -ne [DateTime] 0 -And $Until -le [DateTime]::Now) {
+    Write-Host "##[section]Time provided is in the past, returning..." -ForegroundColor Green
+    return
+}
 
 # Publish to Graphite
 $global:fields = @(
@@ -41,14 +48,23 @@ $subscription = Register-TibberLiveMeasurementSubscription -Connection $connecti
 Write-Host "New GraphQL subscription created: $($subscription.Id)"
 
 # Read data stream
-$callbackArguments = @(
-    $Publish.IsPresent
-    $TimeZone
-)
-$readUntil = Get-ReadUntil
-$time = ([TimeZoneInfo]::ConvertTime([DateTime]::Parse($readUntil), [TimeZoneInfo]::FindSystemTimeZoneById($TimeZone))).ToString('yyyy-MM-dd HH:mm:ss')
-Write-Host "Reading metrics until $time ($TimeZone):"
-$result = Read-TibberWebSocket -Connection $connection -Callback ${function:Send-LiveMetricsToGraphite} -CallbackArgumentList $callbackArguments -ReadUntil $readUntil
+$splat = @{
+    Connection           = $connection
+    Callback             = ${function:Send-LiveMetricsToGraphite}
+    CallbackArgumentList = @(
+        $Publish.IsPresent
+        $TimeZone
+    )
+    TimeoutInSeconds     = $ReadTimeout
+}
+if ($Until -ne [DateTime] 0) {
+    $splat += @{
+        ReadUntil = $Until
+    }
+    $time = ([TimeZoneInfo]::ConvertTime([DateTime]::Parse($Until), [TimeZoneInfo]::FindSystemTimeZoneById($TimeZone))).ToString('yyyy-MM-dd HH:mm:ss')
+    Write-Host "Reading metrics until $time ($TimeZone):"
+}
+$result = Read-TibberWebSocket @splat
 Write-Host "Read $($result.NumberOfPackages) package(s) in $($result.ElapsedTimeInSeconds) seconds"
 
 # Unregister subscription and close down the WebSocket connection

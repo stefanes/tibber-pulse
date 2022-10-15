@@ -11,7 +11,7 @@
         $addHours = 0
     }
 
-    # Output date/time
+    # Output time
     $Now.AddHours($addHours) | Get-Date -Minute $minute -Second 30 -Millisecond 0
 }
 

@@ -36,16 +36,21 @@ jobs:
           reinstall: true
 
       - pwsh: |
+          Import-Module -Name .\tibber-pulse.psm1 -Force -PassThru
+          Write-Host "##[command]Get-ReadUntil"
+          $until = Get-ReadUntil
+
           $succeedWithIssues = $false
           while ($true) {
               try {
-                  & "$(Build.SourcesDirectory)\tibber-live.ps1" -Publish -TimeZone 'W. Europe Standard Time' -Verbose
+                  & .\tibber-live.ps1 -Until $until -Publish -TimeZone 'W. Europe Standard Time' -Verbose
                   break # normal exit
               }
               catch {
                   # failure, try again...
                   Write-Host "##vso[task.logissue type=warning]Keep calm and carry on... [$_]"
                   $succeedWithIssues = $true
+                  #Start-Sleep -Seconds 5
               }
           }
 

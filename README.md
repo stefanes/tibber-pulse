@@ -166,10 +166,10 @@ Use [`tibber-live.ps1`](tibber-live.ps1) to get live measurements and publish th
 | `tibber.live.currentL3`       | `currentL3`       | A    | 10s        |
 | `tibber.live.signalStrength`  | `signalStrength`  | dB/% | 2m         |
 
-Live measurements until two minutes past the hour:
+Read live measurements until a given time:
 
 ```powershell
-PS> .\tibber-live.ps1
+PS> .\tibber-live.ps1 -Until '2022-09-23 11:02'
 Home ID for 'Vitahuset': 96a14971-525a-4420-aae9-e5aedaa129ff
 New GraphQL subscription created: 9d1860e8-4625-4cf9-b865-6737e2dcde9e
 Reading metrics until 2022-09-23 11:02 (W. Europe Standard Time)...
