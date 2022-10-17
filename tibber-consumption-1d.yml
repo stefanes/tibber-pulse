@@ -25,7 +25,7 @@ resources:
 jobs:
   - job:
     displayName: Tibber daily consumption
-    timeoutInMinutes: 10
+    timeoutInMinutes: 30
     steps:
       - template: install-modules.yml@templates
         parameters:

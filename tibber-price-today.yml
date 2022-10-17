@@ -27,7 +27,7 @@ resources:
 jobs:
   - job:
     displayName: Tibber today's price info
-    timeoutInMinutes: 10
+    timeoutInMinutes: 30
     steps:
       - template: install-modules.yml@templates
         parameters:
