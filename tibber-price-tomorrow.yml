@@ -35,12 +35,10 @@ jobs:
           allowPrerelease: false
           reinstall: true
 
-      - task: PowerShell@2
-        inputs:
-          filePath: $(Build.SourcesDirectory)/tibber-price.ps1
-          arguments: -Tomorrow -Publish -TimeZone 'W. Europe Standard Time' -Verbose
-          pwsh: true
+      - pwsh: |
+          & .\tibber-price.ps1 -Tomorrow -Publish -TimeZone 'W. Europe Standard Time' -Verbose -Debug
         displayName: Get tomorrow's price info metrics
+        workingDirectory: $(Build.SourcesDirectory)
         retryCountOnTaskFailure: 10 # The maximum allowed number of attempts is 10
         env:
           TIBBER_ACCESS_TOKEN: $(TIBBER_API_KEY)

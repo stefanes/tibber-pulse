@@ -43,7 +43,7 @@ jobs:
           $succeedWithIssues = $false
           while ($true) {
               try {
-                  & .\tibber-live.ps1 -Until $until -Publish -TimeZone 'W. Europe Standard Time' -Verbose
+                  & .\tibber-live.ps1 -Until $until -Publish -TimeZone 'W. Europe Standard Time'
                   break # normal exit
               }
               catch {

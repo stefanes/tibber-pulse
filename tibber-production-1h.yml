@@ -35,12 +35,10 @@ jobs:
           allowPrerelease: false
           reinstall: true
 
-      - task: PowerShell@2
-        inputs:
-          filePath: $(Build.SourcesDirectory)/tibber-production.ps1
-          arguments: -Publish -TimeZone 'W. Europe Standard Time' -Verbose
-          pwsh: true
+      - pwsh: |
+          & .\tibber-production.ps1 -Publish -TimeZone 'W. Europe Standard Time' -Verbose -Debug
         displayName: Get hourly production metrics
+        workingDirectory: $(Build.SourcesDirectory)
         retryCountOnTaskFailure: 10 # The maximum allowed number of attempts is 10
         env:
           TIBBER_ACCESS_TOKEN: $(TIBBER_API_KEY)
