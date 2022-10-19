@@ -70,12 +70,14 @@ else {
             @{
                 name  = "tibber.daily.consumption"
                 value = $dailyConsumption.consumption * 1000
+                time  = $timestamp
             }
             @{
                 name  = "tibber.daily.cost"
                 value = $dailyConsumption.cost
+                time  = $timestamp
             }
-        ) -Timestamp $timestamp -IntervalInSeconds 86400 # 24 hours
+        ) -IntervalInSeconds 86400 # 24 hours
     }
     else {
         Write-Warning "No daily consumption available"

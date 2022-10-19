@@ -76,12 +76,14 @@ else {
             @{
                 name  = "tibber.daily.production"
                 value = $dailyProduction.production * 1000
+                time  = $timestamp
             }
             @{
                 name  = "tibber.daily.profit"
                 value = $dailyProduction.profit
+                time  = $timestamp
             }
-        ) -Timestamp $timestamp -IntervalInSeconds 86400 # 24 hours
+        ) -IntervalInSeconds 86400 # 24 hours
     }
     else {
         Write-Warning "No daily production available"

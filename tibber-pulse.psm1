@@ -54,26 +54,24 @@ function Send-LiveMetricsToGraphite {
             $value = 0.0
         }
 
-        if ($VerbosePreference -ne [Management.Automation.ActionPreference]::SilentlyContinue -Or $_ -like 'power*') {
-            Write-Host "    $($_): $value"
-        }
+        Write-Host "    $($_): $value"
         $powerMetrics += @{
             name  = "tibber.live.$_"
             value = $value
+            time  = $timestamp
         }
     }
-    $powerMetrics = Get-GraphiteMetric -Metrics $powerMetrics -IntervalInSeconds 10 -Timestamp $timestamp
+    $powerMetrics = Get-GraphiteMetric -Metrics $powerMetrics -IntervalInSeconds 10
 
     # Get signal strength metrics
     $value = $MetricPoint.payload.data.liveMeasurement.signalStrength
     if ($value) {
-        if ($VerbosePreference -ne [Management.Automation.ActionPreference]::SilentlyContinue) {
-            Write-Host "##[command]    signalStrength: $value" -ForegroundColor Blue
-        }
+        Write-Host "##[command]    signalStrength: $value" -ForegroundColor Blue
         $signalStrengthMetrics = Get-GraphiteMetric -Metrics @{
             name  = "tibber.live.signalStrength"
             value = $value
-        } -Timestamp $timestamp -IntervalInSeconds 120 # 2 min
+            time  = $timestamp
+        } -IntervalInSeconds 120 # 2 min
     }
 
     # Publish metrics to Graphite
