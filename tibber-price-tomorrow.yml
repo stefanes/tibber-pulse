@@ -1,8 +1,8 @@
 trigger: none
 
 schedules:
-  - cron: "0 13 * * *"
-    displayName: At 13:00 # UTC = 14:00 CET/15:00 CEST
+  - cron: "30 12 * * *"
+    displayName: At 12:30 # UTC = 13:30 CET/14:30 CEST
     branches:
       include:
         - main
