@@ -36,7 +36,7 @@ jobs:
           reinstall: true
 
       - pwsh: |
-          & .\tibber-consumption.ps1 -Publish -TimeZone 'W. Europe Standard Time'  -Verbose -Debug
+          & .\tibber-consumption.ps1 -Publish -TimeZone 'W. Europe Standard Time'
         displayName: Get hourly consumption metrics
         workingDirectory: $(Build.SourcesDirectory)
         retryCountOnTaskFailure: 10 # The maximum allowed number of attempts is 10

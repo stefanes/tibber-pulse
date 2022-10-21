@@ -36,7 +36,7 @@ jobs:
           reinstall: true
 
       - pwsh: |
-          & .\tibber-price.ps1 -Today -Publish -TimeZone 'W. Europe Standard Time' -Verbose -Debug
+          & .\tibber-price.ps1 -Today -Publish -TimeZone 'W. Europe Standard Time'
         displayName: Get today's price info metrics
         workingDirectory: $(Build.SourcesDirectory)
         retryCountOnTaskFailure: 10 # The maximum allowed number of attempts is 10

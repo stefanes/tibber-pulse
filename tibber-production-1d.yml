@@ -36,7 +36,7 @@ jobs:
           reinstall: true
 
       - pwsh: |
-          & .\tibber-production.ps1 -Publish -TimeZone 'W. Europe Standard Time' -Verbose -Debug
+          & .\tibber-production.ps1 -Publish -TimeZone 'W. Europe Standard Time'
         displayName: Get daily production metrics
         workingDirectory: $(Build.SourcesDirectory)
         retryCountOnTaskFailure: 10 # The maximum allowed number of attempts is 10

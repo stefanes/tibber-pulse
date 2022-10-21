@@ -117,10 +117,10 @@ function Wait-KeyPress {
 # Set default environment variables
 if (-Not $env:TIBBER_ACCESS_TOKEN) {
     $env:TIBBER_ACCESS_TOKEN = '5K4MVS-OjfWhK_4yrjOlFe1F6kJXPVf7eQYggo8ebAE'
-    Write-Host "TIBBER_ACCESS_TOKEN set to default value: $env:TIBBER_ACCESS_TOKEN" -ForegroundColor DarkGray
+    Write-Warning "TIBBER_ACCESS_TOKEN set to default value: $env:TIBBER_ACCESS_TOKEN"
 }
 
 if (-Not $env:GRAPHITE_METRICS_PREFIX) {
     $env:GRAPHITE_METRICS_PREFIX = 'tibber'
-    Write-Host "GRAPHITE_METRICS_PREFIX set to default value: $env:GRAPHITE_METRICS_PREFIX" -ForegroundColor DarkGray
+    Write-Warning "GRAPHITE_METRICS_PREFIX set to default value: $env:GRAPHITE_METRICS_PREFIX"
 }
