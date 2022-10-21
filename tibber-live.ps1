@@ -38,9 +38,7 @@ $global:DebugPreference = $DebugPreference
 $global:VerbosePreference = $VerbosePreference
 
 # Get the home Id
-$myHome = (Get-TibberHome -Fields 'id', 'appNickname')[0]
-$homeId = $myHome.id
-Write-Host "Home ID for '$($myHome.appNickname)': $homeId"
+$homeId = Get-HomeId
 
 # Connect WebSocket and register a subscription
 $connection = Connect-TibberWebSocket

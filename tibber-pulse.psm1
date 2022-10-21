@@ -1,4 +1,13 @@
-﻿function Get-ReadUntil {
+﻿function Get-HomeId {
+    $myHome = (Get-TibberHome -Fields 'id', 'appNickname')[0]
+    $homeId = $myHome.id
+    Write-Host "Home ID for '$($myHome.appNickname)': $homeId"
+
+    # Output object
+    $homeId
+}
+
+function Get-ReadUntil {
     param (
         [DateTime] $Now = [DateTime]::Now
     )

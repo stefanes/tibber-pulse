@@ -17,9 +17,7 @@ $global:DebugPreference = $DebugPreference
 $global:VerbosePreference = $VerbosePreference
 
 # Get the home Id
-$myHome = (Get-TibberHome -Fields 'id', 'appNickname')[0]
-$homeId = $myHome.id
-Write-Host "Home ID for '$($myHome.appNickname)': $homeId"
+$homeId = Get-HomeId
 
 if (-Not $Daily.IsPresent) {
     # Get hourly production
