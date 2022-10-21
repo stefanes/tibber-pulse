@@ -124,12 +124,21 @@ function Wait-KeyPress {
 }
 
 # Set default environment variables
+$tibberDemoToken = '5K4MVS-OjfWhK_4yrjOlFe1F6kJXPVf7eQYggo8ebAE'
 if (-Not $env:TIBBER_ACCESS_TOKEN) {
-    $env:TIBBER_ACCESS_TOKEN = '5K4MVS-OjfWhK_4yrjOlFe1F6kJXPVf7eQYggo8ebAE'
-    Write-Warning "TIBBER_ACCESS_TOKEN set to default value: $env:TIBBER_ACCESS_TOKEN"
+    $env:TIBBER_ACCESS_TOKEN = $tibberDemoToken
+    Write-Warning "TIBBER_ACCESS_TOKEN set to '$tibberDemoToken'"
 }
 
-if (-Not $env:GRAPHITE_METRICS_PREFIX) {
-    $env:GRAPHITE_METRICS_PREFIX = 'tibber'
-    Write-Warning "GRAPHITE_METRICS_PREFIX set to default value: $env:GRAPHITE_METRICS_PREFIX"
+$tibberDemoMetrics = 'tibber-demo'
+$tibberDefaultMetrics = 'tibber'
+if ($env:TIBBER_ACCESS_TOKEN -eq $tibberDemoToken) {
+    $env:GRAPHITE_METRICS_PREFIX = $tibberDemoMetrics
+    Write-Warning "Using demo token, GRAPHITE_METRICS_PREFIX set to '$tibberDemoMetrics'"
+}
+else {
+    if (-Not $env:GRAPHITE_METRICS_PREFIX -Or $env:GRAPHITE_METRICS_PREFIX -eq $tibberDemoMetrics) {
+        $env:GRAPHITE_METRICS_PREFIX = $tibberDefaultMetrics
+        Write-Warning "GRAPHITE_METRICS_PREFIX set to '$tibberDefaultMetrics'"
+    }
 }

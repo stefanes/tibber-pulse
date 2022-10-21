@@ -39,11 +39,9 @@ $splat = @{
     HomeId          = $homeId
     IncludeToday    = $Today.IsPresent
     IncludeTomorrow = $Tomorrow.IsPresent
-    ExcludeCurrent  = $true
-    # Temporary workaround for missing price info
-    Last            = 10
+    Last            = 10 # included if today/tomorrow goes missing
 }
-$priceInfo = Get-TibberPriceInfo @splat
+$priceInfo = Get-TibberPriceInfo @splat | Sort-Object { $_.startsAt } -Unique
 
 # Sort by 'total' and split into buckets
 $priceSorted = $priceInfo | Sort-Object -Property total -Descending
