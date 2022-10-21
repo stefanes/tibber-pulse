@@ -30,8 +30,8 @@ function Send-Metrics {
         )
     }
 
-    $outHost = $VerbosePreference -ne [Management.Automation.ActionPreference]::SilentlyContinue -Or $DebugPreference -ne [Management.Automation.ActionPreference]::SilentlyContinue
-    Send-GraphiteMetric -Metrics $Metrics | Select-Object $columns | ForEach-Object { if ($outHost) { $_ | Out-Host } }
+    Send-GraphiteMetric -Metrics $Metrics | Select-Object $columns | ForEach-Object { $_ | Out-Host }
+    # Write-Host "Would publish metrics to Graphite: $Metrics" -ForegroundColor DarkYellow
 }
 
 function Send-LiveMetricsToGraphite {
@@ -56,7 +56,7 @@ function Send-LiveMetricsToGraphite {
 
         Write-Host "    $($_): $value"
         $powerMetrics += @{
-            name  = "tibber.live.$_"
+            name  = "$env:GRAPHITE_METRICS_PREFIX.live.$_"
             value = $value
             time  = $timestamp
         }
@@ -68,7 +68,7 @@ function Send-LiveMetricsToGraphite {
     if ($value) {
         Write-Host "##[command]    signalStrength: $value" -ForegroundColor Blue
         $signalStrengthMetrics = Get-GraphiteMetric -Metrics @{
-            name  = "tibber.live.signalStrength"
+            name  = "$env:GRAPHITE_METRICS_PREFIX.live.signalStrength"
             value = $value
             time  = $timestamp
         } -IntervalInSeconds 120 # 2 min
@@ -101,7 +101,7 @@ function Wait-KeyPress {
     if ($TimeoutInSeconds -eq -1) {
         $waitString = "indefinately"
     }
-    Write-Host ("Waiting $waitString, press space to exit...")
+    Write-Host "Waiting $waitString, press space to exit..."
     while ($TimeoutInSeconds -eq -1 -Or $timer.Elapsed.TotalSeconds -lt $TimeoutInSeconds) {
         if ($host.UI.RawUI.KeyAvailable) {
             $pressedKey = $host.ui.RawUI.ReadKey("NoEcho,IncludeKeyUp")
@@ -112,4 +112,15 @@ function Wait-KeyPress {
         }
         Start-Sleep -Seconds 3
     }
+}
+
+# Set default environment variables
+if (-Not $env:TIBBER_ACCESS_TOKEN) {
+    $env:TIBBER_ACCESS_TOKEN = '5K4MVS-OjfWhK_4yrjOlFe1F6kJXPVf7eQYggo8ebAE'
+    Write-Host "TIBBER_ACCESS_TOKEN set to default value: $env:TIBBER_ACCESS_TOKEN" -ForegroundColor DarkGray
+}
+
+if (-Not $env:GRAPHITE_METRICS_PREFIX) {
+    $env:GRAPHITE_METRICS_PREFIX = 'tibber'
+    Write-Host "GRAPHITE_METRICS_PREFIX set to default value: $env:GRAPHITE_METRICS_PREFIX" -ForegroundColor DarkGray
 }

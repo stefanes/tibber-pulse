@@ -37,12 +37,12 @@ if (-Not $Daily.IsPresent) {
             $timestamp = Get-GraphiteTimestamp -Timestamp $tibberTimestamp
             $hourlyProductionMetrics += @(
                 @{
-                    name  = "tibber.hourly.production"
+                    name  = "$env:GRAPHITE_METRICS_PREFIX.hourly.production"
                     value = $_.production * 1000
                     time  = $timestamp
                 }
                 @{
-                    name  = "tibber.hourly.profit"
+                    name  = "$env:GRAPHITE_METRICS_PREFIX.hourly.profit"
                     value = $_.profit
                     time  = $timestamp
                 }
@@ -74,12 +74,12 @@ else {
         $timestamp = Get-GraphiteTimestamp -Timestamp $tibberTimestamp
         $dailyProductionMetrics = Get-GraphiteMetric -Metrics @(
             @{
-                name  = "tibber.daily.production"
+                name  = "$env:GRAPHITE_METRICS_PREFIX.daily.production"
                 value = $dailyProduction.production * 1000
                 time  = $timestamp
             }
             @{
-                name  = "tibber.daily.profit"
+                name  = "$env:GRAPHITE_METRICS_PREFIX.daily.profit"
                 value = $dailyProduction.profit
                 time  = $timestamp
             }

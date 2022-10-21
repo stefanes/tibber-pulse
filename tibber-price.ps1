@@ -99,17 +99,17 @@ $priceInfo | ForEach-Object {
     $timestamp = Get-GraphiteTimestamp -Timestamp $tibberTimestamp
     $priceInfoMetrics += @(
         @{
-            name  = "tibber.hourly.price"
+            name  = "$env:GRAPHITE_METRICS_PREFIX.hourly.price"
             value = $_.total
             time  = $timestamp
         }
         @{
-            name  = "tibber.hourly.priceLevel"
+            name  = "$env:GRAPHITE_METRICS_PREFIX.hourly.priceLevel"
             value = $priceLevel
             time  = $timestamp
         }
         @{
-            name  = "tibber.hourly.priceScore"
+            name  = "$env:GRAPHITE_METRICS_PREFIX.hourly.priceScore"
             value = $priceScore
             time  = $timestamp
         }
