@@ -1,4 +1,4 @@
-[CmdletBinding(DefaultParameterSetName = 'Tomorrow')]
+﻿[CmdletBinding(DefaultParameterSetName = 'Tomorrow')]
 param (
     [Parameter(Mandatory = $true, ParameterSetName = 'Today')]
     [switch] $Today,
@@ -40,6 +40,8 @@ $splat = @{
     IncludeToday    = $Today.IsPresent
     IncludeTomorrow = $Tomorrow.IsPresent
     ExcludeCurrent  = $true
+    # Temporary workaround for missing price info
+    Last            = 10
 }
 $priceInfo = Get-TibberPriceInfo @splat
 
