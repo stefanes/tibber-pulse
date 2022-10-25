@@ -24,9 +24,9 @@ if (-Not $Daily.IsPresent) {
     $hourlyProductionMetrics = @()
     Write-Host "Hourly production ($TimeZone)..."
     Get-TibberProduction -HomeId $homeId -Last 24 | ForEach-Object {
-        $tibberTimestamp = $_.to
-        $to = ([TimeZoneInfo]::ConvertTime([DateTime]::Parse($tibberTimestamp), [TimeZoneInfo]::FindSystemTimeZoneById($TimeZone))).ToString('yyyy-MM-dd HH:mm')
-        $from = ([TimeZoneInfo]::ConvertTime([DateTime]::Parse($_.from), [TimeZoneInfo]::FindSystemTimeZoneById($TimeZone))).ToString('yyyy-MM-dd HH:mm')
+        $tibberTimestamp = $_.from
+        $to = ([TimeZoneInfo]::ConvertTime([DateTime]::Parse($_.to), [TimeZoneInfo]::FindSystemTimeZoneById($TimeZone))).ToString('yyyy-MM-dd HH:mm')
+        $from = ([TimeZoneInfo]::ConvertTime([DateTime]::Parse($tibberTimestamp), [TimeZoneInfo]::FindSystemTimeZoneById($TimeZone))).ToString('yyyy-MM-dd HH:mm')
         Write-Host "From $from to ${to}:"
         if ($_.production) {
             Write-Host "    $($_.production * 1000) W"
