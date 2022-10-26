@@ -36,10 +36,11 @@ jobs:
           reinstall: true
 
       - pwsh: |
-          & .\tibber-price.ps1 -Today -Publish -TimeZone 'W. Europe Standard Time'
+          & .\tibber-price.ps1 -Today -Publish -TimeZone 'W. Europe Standard Time' -Verbose
         displayName: Get today's price info metrics
         workingDirectory: $(Build.SourcesDirectory)
         retryCountOnTaskFailure: 10 # The maximum allowed number of attempts is 10
         env:
           TIBBER_ACCESS_TOKEN: $(TIBBER_API_KEY)
+          TIBBER_USER_AGENT: 'stefanes/tibber-pulse'
           GRAPHITE_ACCESS_TOKEN: $(GF_API_KEY)

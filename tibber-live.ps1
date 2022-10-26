@@ -1,4 +1,6 @@
-﻿[CmdletBinding()]
+﻿#Requires -Modules @{ ModuleName = 'PSTibber'; ModuleVersion = '0.5.2' }
+
+[CmdletBinding()]
 param (
     [DateTime] $Until = [DateTime]::MinValue,
     [int] $ReadTimeout = 30,
@@ -41,7 +43,7 @@ $global:VerbosePreference = $VerbosePreference
 $homeId = Get-HomeId
 
 # Connect WebSocket and register a subscription
-$connection = Connect-TibberWebSocket
+$connection = Connect-TibberWebSocket -URI (Get-TibberUser).websocketSubscriptionUrl
 $subscription = Register-TibberLiveMeasurementSubscription -Connection $connection -HomeId $homeId -Fields ('timestamp', $global:fields, 'signalStrength')
 Write-Host "New GraphQL subscription created: $($subscription.Id)"
 
