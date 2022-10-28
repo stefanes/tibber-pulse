@@ -25,8 +25,8 @@ if (-Not $Daily.IsPresent) {
     Write-Host "Hourly production ($TimeZone)..."
     Get-TibberProduction -HomeId $homeId -Last 24 | ForEach-Object {
         $tibberTimestamp = $_.from
-        $to = ([TimeZoneInfo]::ConvertTime([DateTime]::Parse($_.to), [TimeZoneInfo]::FindSystemTimeZoneById($TimeZone))).ToString('yyyy-MM-dd HH:mm')
-        $from = ([TimeZoneInfo]::ConvertTime([DateTime]::Parse($tibberTimestamp), [TimeZoneInfo]::FindSystemTimeZoneById($TimeZone))).ToString('yyyy-MM-dd HH:mm')
+        $to = ([TimeZoneInfo]::ConvertTime([DateTime]::Parse($_.to, [CultureInfo]::InvariantCulture), [TimeZoneInfo]::FindSystemTimeZoneById($TimeZone))).ToString('yyyy-MM-dd HH:mm')
+        $from = ([TimeZoneInfo]::ConvertTime([DateTime]::Parse($tibberTimestamp, [CultureInfo]::InvariantCulture), [TimeZoneInfo]::FindSystemTimeZoneById($TimeZone))).ToString('yyyy-MM-dd HH:mm')
         Write-Host "From $from to ${to}:"
         if ($_.production) {
             Write-Host "    $($_.production * 1000) W"
@@ -63,8 +63,8 @@ else {
     $dailyProduction = Get-TibberProduction -HomeId $homeId -Resolution DAILY
     if ($dailyProduction) {
         $tibberTimestamp = $dailyProduction.to
-        $to = ([TimeZoneInfo]::ConvertTime([DateTime]::Parse($tibberTimestamp), [TimeZoneInfo]::FindSystemTimeZoneById($TimeZone))).ToString('yyyy-MM-dd HH:mm')
-        $from = ([TimeZoneInfo]::ConvertTime([DateTime]::Parse($dailyProduction.from), [TimeZoneInfo]::FindSystemTimeZoneById($TimeZone))).ToString('yyyy-MM-dd HH:mm')
+        $to = ([TimeZoneInfo]::ConvertTime([DateTime]::Parse($tibberTimestamp, [CultureInfo]::InvariantCulture), [TimeZoneInfo]::FindSystemTimeZoneById($TimeZone))).ToString('yyyy-MM-dd HH:mm')
+        $from = ([TimeZoneInfo]::ConvertTime([DateTime]::Parse($dailyProduction.from, [CultureInfo]::InvariantCulture), [TimeZoneInfo]::FindSystemTimeZoneById($TimeZone))).ToString('yyyy-MM-dd HH:mm')
         Write-Host "Daily production from $from to $to ($TimeZone):"
         Write-Host "    $($dailyProduction.production * 1000) W"
         Write-Host "    $(($dailyProduction.profit).ToString("0.00")) $($dailyProduction.currency)"

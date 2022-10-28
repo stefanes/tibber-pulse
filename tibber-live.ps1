@@ -61,7 +61,7 @@ if ($Until -ne [DateTime]::MinValue) {
     $splat += @{
         ReadUntil = $Until
     }
-    $time = ([TimeZoneInfo]::ConvertTime([DateTime]::Parse($Until), [TimeZoneInfo]::FindSystemTimeZoneById($TimeZone))).ToString('yyyy-MM-dd HH:mm:ss')
+    $time = ([TimeZoneInfo]::ConvertTime([DateTime]::Parse($Until, [CultureInfo]::InvariantCulture), [TimeZoneInfo]::FindSystemTimeZoneById($TimeZone))).ToString('yyyy-MM-dd HH:mm:ss')
     Write-Host "Reading metrics until $time ($TimeZone):"
 }
 $result = Read-TibberWebSocket @splat

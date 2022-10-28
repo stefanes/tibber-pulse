@@ -1,4 +1,4 @@
-﻿[CmdletBinding(DefaultParameterSetName = 'Tomorrow')]
+[CmdletBinding(DefaultParameterSetName = 'Tomorrow')]
 param (
     [Parameter(Mandatory = $true, ParameterSetName = 'Today')]
     [switch] $Today,
@@ -90,7 +90,7 @@ $priceInfo | ForEach-Object {
     }
 
     $tibberTimestamp = $_.startsAt
-    $time = ([TimeZoneInfo]::ConvertTime([DateTime]::Parse($tibberTimestamp), [TimeZoneInfo]::FindSystemTimeZoneById($TimeZone))).ToString('yyyy-MM-dd HH:mm')
+    $time = ([TimeZoneInfo]::ConvertTime([DateTime]::Parse($tibberTimestamp, [CultureInfo]::InvariantCulture), [TimeZoneInfo]::FindSystemTimeZoneById($TimeZone))).ToString('yyyy-MM-dd HH:mm')
     $message = "    $($_.total.ToString('0.0000')) $($_.currency) at $time [level = $priceLevel] [score = $priceScore]"
     Write-Host $message -ForegroundColor $color
 
