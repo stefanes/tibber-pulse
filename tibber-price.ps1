@@ -39,7 +39,6 @@ $splat = @{
     HomeId          = $homeId
     IncludeToday    = $Today.IsPresent
     IncludeTomorrow = $Tomorrow.IsPresent
-    Last            = 10 # included if today/tomorrow goes missing
 }
 $priceInfo = Get-TibberPriceInfo @splat | Sort-Object { $_.startsAt } -Unique
 
