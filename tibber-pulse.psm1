@@ -14,14 +14,15 @@ function Get-ReadUntil {
 
     $addHours = 1
     $minute = 5
+    $second = 0
 
     if ($Now.Minute -lt 30) {
-        $minute = 35
+        $minute += 30
         $addHours = 0
     }
 
     # Output time
-    $Now.AddHours($addHours) | Get-Date -Minute $minute -Second 0 -Millisecond 0
+    $Now.AddHours($addHours) | Get-Date -Minute $minute -Second $second -Millisecond 0
 }
 
 function Send-Metrics {
