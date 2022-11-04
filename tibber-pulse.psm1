@@ -21,7 +21,7 @@ function Get-ReadUntil {
     }
 
     # Output time
-    $Now.AddHours($addHours) | Get-Date -Minute $minute -Second 30 -Millisecond 0
+    $Now.AddHours($addHours) | Get-Date -Minute $minute -Second 0 -Millisecond 0
 }
 
 function Send-Metrics {
