@@ -13,10 +13,10 @@ function Get-ReadUntil {
     )
 
     $addHours = 1
-    $minute = 2
+    $minute = 5
 
     if ($Now.Minute -lt 30) {
-        $minute = 32
+        $minute = 35
         $addHours = 0
     }
 
