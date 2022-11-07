@@ -43,7 +43,7 @@ $global:VerbosePreference = $VerbosePreference
 $homeId = Get-HomeId
 
 # Connect WebSocket and register a subscription
-$connection = Connect-TibberWebSocket -URI (Get-TibberUser).websocketSubscriptionUrl
+$connection = Connect-TibberWebSocket
 $subscription = Register-TibberLiveMeasurementSubscription -Connection $connection -HomeId $homeId -Fields ('timestamp', $global:fields, 'signalStrength')
 Write-Host "New GraphQL subscription created: $($subscription.Id)"
 
