@@ -12,14 +12,14 @@ function Get-ReadUntil {
         [DateTime] $Now = [DateTime]::Now
     )
 
-    $addHours = 1
+    $addHours = 4
     $minute = 5
     $second = 0
 
-    if ($Now.Minute -lt 30) {
-        $minute += 30
-        $addHours = 0
-    }
+    # if ($Now.Minute -lt 30) {
+    #     $minute += 30
+    #     $addHours = 0
+    # }
 
     # Output time
     $Now.AddHours($addHours) | Get-Date -Minute $minute -Second $second -Millisecond 0
@@ -95,32 +95,6 @@ function Send-LiveMetricsToGraphite {
     }
     else {
         Write-Host "Note: Not publishing metrics to Graphite..." -ForegroundColor DarkGray
-    }
-}
-
-function Wait-KeyPress {
-    param (
-        [Alias('Timeout')]
-        [int] $TimeoutInSeconds = -1 # indefinately
-    )
-
-    # Keep session alive for a set time, or until space key is pressed
-    $spaceKey = 0x20 # space
-    $timer = [Diagnostics.Stopwatch]::StartNew()
-    $waitString = "for $TimeoutInSeconds seconds"
-    if ($TimeoutInSeconds -eq -1) {
-        $waitString = "indefinately"
-    }
-    Write-Host "Waiting $waitString, press space to exit..."
-    while ($TimeoutInSeconds -eq -1 -Or $timer.Elapsed.TotalSeconds -lt $TimeoutInSeconds) {
-        if ($host.UI.RawUI.KeyAvailable) {
-            $pressedKey = $host.ui.RawUI.ReadKey("NoEcho,IncludeKeyUp")
-            if ($pressedKey.VirtualKeyCode -eq $spaceKey) {
-                Write-Host "Space key pressed, exiting" -ForegroundColor DarkGray
-                break
-            }
-        }
-        Start-Sleep -Seconds 3
     }
 }
 
