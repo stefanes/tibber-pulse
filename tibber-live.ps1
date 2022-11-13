@@ -1,4 +1,4 @@
-﻿#Requires -Modules @{ ModuleName = 'PSTibber'; ModuleVersion = '0.5.2' }
+﻿#Requires -Modules @{ ModuleName = 'PSTibber'; ModuleVersion = '0.6.0'; MaximumVersion = '0.6.99' }
 
 [CmdletBinding()]
 param (
@@ -43,8 +43,8 @@ $global:VerbosePreference = $VerbosePreference
 $homeId = Get-HomeId
 
 # Connect WebSocket and register a subscription
-$connection = Connect-TibberWebSocket
-$subscription = Register-TibberLiveMeasurementSubscription -Connection $connection -HomeId $homeId -Fields ('timestamp', $global:fields, 'signalStrength')
+$connection = Connect-TibberWebSocket -HomeId $homeId
+$subscription = Register-TibberLiveMeasurementSubscription -Connection $connection -Fields ('timestamp', $global:fields, 'signalStrength')
 Write-Host "New GraphQL subscription created: $($subscription.Id)"
 
 # Read data stream
@@ -75,4 +75,3 @@ Disconnect-TibberWebSocket -Connection $connection
 # Reset Log verbosity
 $global:DebugPreference = $dbgpref
 $global:VerbosePreference = $vrbpref
-# $global:DebugPreference = $global:VerbosePreference = 'SilentlyContinue'
