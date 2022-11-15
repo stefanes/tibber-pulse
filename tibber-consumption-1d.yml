@@ -36,5 +36,5 @@ jobs:
 
       - template: invoke-expression.yml
         parameters:
-          expression: ".\tibber-consumption.ps1 -Daily -Publish -TimeZone 'W. Europe Standard Time'"
+          expression: ".\\tibber-consumption.ps1 -Daily -Publish -TimeZone 'W. Europe Standard Time'"
           displayName: Get daily consumption metrics
