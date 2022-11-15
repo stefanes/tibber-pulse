@@ -25,7 +25,7 @@ resources:
 jobs:
   - job:
     displayName: Tibber today's price info
-    timeoutInMinutes: 30
+    timeoutInMinutes: 50
     steps:
       - template: install-modules.yml@templates
         parameters:
@@ -35,12 +35,7 @@ jobs:
           allowPrerelease: false
           reinstall: true
 
-      - pwsh: |
-          & .\tibber-price.ps1 -Today -Publish -TimeZone 'W. Europe Standard Time'
-        displayName: Get today's price info metrics
-        workingDirectory: $(Build.SourcesDirectory)
-        retryCountOnTaskFailure: 10 # The maximum allowed number of attempts is 10
-        env:
-          TIBBER_ACCESS_TOKEN: $(TIBBER_API_KEY)
-          TIBBER_USER_AGENT: 'stefanes.tibber-pulse/0.1.0'
-          GRAPHITE_ACCESS_TOKEN: $(GF_API_KEY)
+      - template: invoke-expression.yml
+        parameters:
+          expression: .\tibber-price.ps1 -Today -Publish -TimeZone 'W. Europe Standard Time'
+          displayName: Get today's price info metrics
