@@ -37,6 +37,6 @@ jobs:
 
       - template: invoke-expression.yml
         parameters:
-          expression: .\tibber-live.ps1 -Until $until -Publish -TimeZone 'W. Europe Standard Time'
+          expression: .\tibber-live.ps1 -Until '$until' -Publish -TimeZone 'W. Europe Standard Time'
           live: true
           displayName: Get live measurement metrics
