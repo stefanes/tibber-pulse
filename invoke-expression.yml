@@ -24,18 +24,19 @@ steps:
       while ($true) {
           try {
               $expression = "${{ parameters.expression }}"
-              Write-Host "##[command]& $expression"
+              Write-Host "##[command]Invoke-Expression -Command `"& $expression`""
               Invoke-Expression -Command "& $expression"
               break # normal exit
           }
           catch {
               # failure, try again...
-              Write-Host "##vso[task.logissue type=warning]Keep calm and carry on... [ Failure count = $failureCount | Last failure = $($lastFailure.ToString('yyyy-MM-dd HH:mm:ss')) ] :: $_"
               $succeedWithIssues = $true
+              $failureCount++
+              Write-Host "##vso[task.logissue type=warning]Keep calm and carry on... [ Failure count = $failureCount | Last failure = $($lastFailure.ToString('yyyy-MM-dd HH:mm:ss')) ] :: $_"
 
               # if multiple failures within the last minute
               if ([DateTime]::Now -lt $lastFailure.AddMinutes(1)) {
-                  $retryWaitTime = [Math]::Min([Math]::Pow(++$failureCount, 2), 300) # max 5 min
+                  $retryWaitTime = [Math]::Min([Math]::Pow($failureCount, 2), 300) # max 5 min
                   Write-Host "Retrying in $retryWaitTime second(s)"
                   Start-Sleep -Seconds $retryWaitTime
               } else {
