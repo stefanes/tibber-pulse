@@ -32,7 +32,7 @@ steps:
               # failure, try again...
               $succeedWithIssues = $true
               $failureCount++
-              Write-Host "##vso[task.logissue type=warning]Keep calm and carry on... [ Failure count = $failureCount | Last failure = $($lastFailure.ToString('yyyy-MM-dd HH:mm:ss')) ] :: $_"
+              Write-Host "##vso[task.logissue type=warning]Keep calm and carry on... [Recent failures = $failureCount | Last failure = $($lastFailure.ToString('yyyy-MM-dd HH:mm:ss'))] :: $_"
 
               # if multiple failures within the last minute
               if ([DateTime]::Now -lt $lastFailure.AddMinutes(1)) {
