@@ -23,7 +23,9 @@ steps:
       $lastFailure = [DateTime]::MinValue
       while ($true) {
           try {
-              Invoke-Expression "& ${{ parameters.expression }}"
+              $expression = "${{ parameters.expression }}"
+              Write-Host "##[command]& $expression"
+              Invoke-Expression -Command "& $expression"
               break # normal exit
           }
           catch {
