@@ -11,7 +11,7 @@ steps:
   - pwsh: |
       Import-Module -Name .\tibber-pulse.psd1 -Force -PassThru
 
-      # Special case for 'tibber-live'
+      # Special case for the 'tibber-live' pipeline
       if ([bool]::Parse("${{ parameters.live }}")) {
           Write-Host "##[command]Get-ReadUntil"
           $until = Get-ReadUntil
