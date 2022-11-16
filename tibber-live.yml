@@ -35,8 +35,22 @@ jobs:
           allowPrerelease: false
           reinstall: true
 
-      - template: invoke-expression.yml
+      - pwsh: |
+          Import-Module -Name .\tibber-pulse.psd1 -Force -PassThru
+          Write-Host "##[command]Get-ReadUntil"
+          $until = Get-ReadUntil
+
+          Write-Host "##[command][task.setvariable variable=readUntil]$until"
+          Write-Host "##vso[task.setvariable variable=readUntil]$until"
+        displayName: Get read deadline
+        workingDirectory: $(Build.SourcesDirectory)
+
+      - template: invoke-expressionwithretry.yml@templates
         parameters:
-          expression: .\tibber-live.ps1 -Until '$until' -Publish -TimeZone 'W. Europe Standard Time'
-          live: true
+          numberOfRetries: -1
+          expression: .\tibber-live.ps1 -Until '$(readUntil)' -Publish -TimeZone 'W. Europe Standard Time'
           displayName: Get live measurement metrics
+          env:
+            TIBBER_ACCESS_TOKEN: $(TIBBER_API_KEY)
+            TIBBER_USER_AGENT: "stefanes.tibber-pulse/0.1.1"
+            GRAPHITE_ACCESS_TOKEN: $(GF_API_KEY)

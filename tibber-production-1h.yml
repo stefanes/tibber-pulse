@@ -37,7 +37,6 @@ jobs:
 
       - template: invoke-expressionwithretry.yml@templates
         parameters:
-          numberOfRetries: -1
           expression: .\tibber-production.ps1 -Publish -TimeZone 'W. Europe Standard Time'
           displayName: Get hourly production metrics
           env:

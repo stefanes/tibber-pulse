@@ -36,7 +36,6 @@ jobs:
 
       - template: invoke-expressionwithretry.yml@templates
         parameters:
-          numberOfRetries: -1
           expression: .\tibber-price.ps1 -Tomorrow -Publish -TimeZone 'W. Europe Standard Time'
           displayName: Get tomorrow's price info metrics
           env:
