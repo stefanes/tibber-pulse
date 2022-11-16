@@ -34,7 +34,12 @@ jobs:
           allowPrerelease: false
           reinstall: true
 
-      - template: invoke-expression.yml
+      - template: invoke-expressionwithretry.yml@templates
         parameters:
+          numberOfRetries: -1
           expression: .\tibber-production.ps1 -Daily -Publish -TimeZone 'W. Europe Standard Time'
           displayName: Get daily production metrics
+          env:
+            TIBBER_ACCESS_TOKEN: $(TIBBER_API_KEY)
+            TIBBER_USER_AGENT: "stefanes.tibber-pulse/0.1.1"
+            GRAPHITE_ACCESS_TOKEN: $(GF_API_KEY)
