@@ -68,9 +68,9 @@ $result = Read-TibberWebSocket @splat
 Write-Host "Read $($result.NumberOfPackages) package(s) in $($result.ElapsedTimeInSeconds) seconds"
 
 # Unregister subscription and close down the WebSocket connection
-# Unregister-TibberLiveMeasurementSubscription -Connection $connection -Subscription $subscription
-# Write-Host "GraphQL subscription stopped: $($subscription.Id)"
-# Disconnect-TibberWebSocket -Connection $connection
+Unregister-TibberLiveMeasurementSubscription -Connection $connection -Subscription $subscription
+Write-Host "GraphQL subscription stopped: $($subscription.Id)"
+Disconnect-TibberWebSocket -Connection $connection
 
 # Reset Log verbosity
 $global:DebugPreference = $dbgpref
