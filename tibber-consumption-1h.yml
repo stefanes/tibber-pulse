@@ -44,3 +44,4 @@ jobs:
             TIBBER_ACCESS_TOKEN: $(TIBBER_API_KEY)
             TIBBER_USER_AGENT: "stefanes.tibber-pulse/0.1.1"
             GRAPHITE_ACCESS_TOKEN: $(GF_API_KEY)
+            GRAPHITE_METRICS_PREFIX: tibber
