@@ -59,5 +59,5 @@ steps:
     retryCountOnTaskFailure: 10 # The maximum allowed number of attempts is 10
     env:
       TIBBER_ACCESS_TOKEN: $(TIBBER_API_KEY)
-      TIBBER_USER_AGENT: 'stefanes.tibber-pulse/0.1.1'
+      TIBBER_USER_AGENT: "stefanes.tibber-pulse/0.1.1"
       GRAPHITE_ACCESS_TOKEN: $(GF_API_KEY)
