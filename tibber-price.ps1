@@ -31,9 +31,9 @@ $level = @{
     VERY_EXPENSIVE = 50
 }
 $score = @{
-    LOW    = -10
+    LOW    = -1
     MEDIUM = 0
-    HIGH   = 10
+    HIGH   = 1
 }
 $splat = @{
     HomeId          = $homeId
