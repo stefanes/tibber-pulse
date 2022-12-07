@@ -37,7 +37,7 @@ jobs:
 
       - template: invoke-expressionwithretry.yml@templates
         parameters:
-          expression: .\tibber-price-json.ps1 -Path "$(Pipeline.Workspace)" -TimeZone 'W. Europe Standard Time'
+          expression: .\tibber-price-json.ps1 -Path '$(Pipeline.Workspace)' -TimeZone 'W. Europe Standard Time'
           displayName: Get price info metrics
           env:
             TIBBER_ACCESS_TOKEN: $(TIBBER_API_KEY)
