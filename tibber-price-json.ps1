@@ -32,7 +32,7 @@ $priceInfoMetrics += Get-PriceInfoMetrics -PriceInfo $priceInfo -TimeZone $TimeZ
 $priceInfo = Get-TibberPriceInfo @splat -IncludeTomorrow
 $priceInfoMetrics += Get-PriceInfoMetrics -PriceInfo $priceInfo -TimeZone $TimeZone
 
-$priceInfoMetrics | ConvertTo-Json -Depth 10 | Out-File -FilePath $Path\tibber-price.json
+$priceInfoMetrics | ConvertTo-Json -Depth 10 | Out-File -FilePath "$Path\tibber-price.json"
 
 # Reset Log verbosity
 $global:DebugPreference = $dbgpref
