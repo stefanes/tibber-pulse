@@ -1,0 +1,48 @@
+trigger: none
+
+schedules:
+  - cron: "0 18 * * *"
+    displayName: At 18:00 # UTC = 19:00 CET/20:00 CEST
+    branches:
+      include:
+        - main
+    always: true
+
+pool:
+  vmImage: windows-latest
+
+variables:
+  - group: tibber-pulse
+
+resources:
+  repositories:
+    # See https://github.com/stefanes/azure-pipelines
+    - repository: templates
+      type: github
+      endpoint: stefanes
+      name: stefanes/azure-pipelines
+
+jobs:
+  - job:
+    displayName: Tibber price info
+    timeoutInMinutes: 50
+    steps:
+      - template: install-modules.yml@templates
+        parameters:
+          modules:
+            - PSTibber
+            - PSGraphite
+          allowPrerelease: false
+          reinstall: true
+
+      - template: invoke-expressionwithretry.yml@templates
+        parameters:
+          expression: .\tibber-price-json.ps1 -Path "$(Pipeline.Workspace)" -TimeZone 'W. Europe Standard Time'
+          displayName: Get price info metrics
+          env:
+            TIBBER_ACCESS_TOKEN: $(TIBBER_API_KEY)
+            TIBBER_USER_AGENT: "stefanes.tibber-pulse/0.1.1"
+
+      - publish: "$(Pipeline.Workspace)/tibber-price.json"
+        artifact: tibber-price
+        displayName: Publish Tibber price info
