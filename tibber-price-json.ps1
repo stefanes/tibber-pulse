@@ -6,6 +6,7 @@ param (
 
 # Import required modules
 Import-Module -Name PSTibber -Force -PassThru
+Import-Module -Name PSGraphite -Force -PassThru
 Import-Module -Name $PSScriptRoot\tibber-pulse.psd1 -Force -PassThru
 
 # Set Log verbosity
