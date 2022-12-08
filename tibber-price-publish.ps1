@@ -1,15 +1,13 @@
 [CmdletBinding(DefaultParameterSetName = 'Tomorrow')]
 param (
-    [string] $Path = '.',
-    [switch] $Publish,
-    [string] $TimeZone = [TimeZoneInfo]::Local.Id
+    [string] $Path = '.'
 )
 
 # Import required modules
 Import-Module -Name PSGraphite -Force -PassThru
 Import-Module -Name $PSScriptRoot\tibber-pulse.psd1 -Force -PassThru
 
-# Set Log verbosity
+# Set log verbosity
 $dbgpref = $global:DebugPreference
 $vrbpref = $global:VerbosePreference
 $global:DebugPreference = $DebugPreference
@@ -37,25 +35,11 @@ $priceInfo | ForEach-Object {
         }
     )
 }
-$priceInfoMetrics = Get-GraphiteMetric -Metrics $priceInfoMetrics -IntervalInSeconds 3600 # 1 hour
 
 # Send metrics to Graphite
-if ($Publish.IsPresent) {
-    if ($priceInfoMetrics) {
-        Send-Metrics $priceInfoMetrics
+$priceInfoMetrics = Get-GraphiteMetric -Metrics $priceInfoMetrics -IntervalInSeconds 3600 # 1 hour
+Send-Metrics $priceInfoMetrics
 
-        # Add build tag(s)
-        if ($Today.IsPresent) {
-            Write-Host "##[command][build.addbuildtag]today"
-            Write-Host "##vso[build.addbuildtag]today"
-        }
-        if ($Tomorrow.IsPresent) {
-            Write-Host "##[command][build.addbuildtag]tomorrow"
-            Write-Host "##vso[build.addbuildtag]tomorrow"
-        }
-    }
-}
-
-# Reset Log verbosity
+# Reset log verbosity
 $global:DebugPreference = $dbgpref
 $global:VerbosePreference = $vrbpref

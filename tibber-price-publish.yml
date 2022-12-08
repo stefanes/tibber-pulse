@@ -45,9 +45,10 @@ jobs:
 
       - template: invoke-expressionwithretry.yml@templates
         parameters:
-          expression: .\tibber-price-publish.ps1 -Path '$(Pipeline.Workspace)\tibber-price-json\tibber-price' -Publish -TimeZone 'W. Europe Standard Time'
+          expression: .\tibber-price-publish.ps1 -Path '$(Pipeline.Workspace)\tibber-price-json\tibber-price'
           displayName: Publish price info metrics
           env:
             TIBBER_ACCESS_TOKEN: $(TIBBER_API_KEY)
+            TIBBER_USER_AGENT: "stefanes.tibber-pulse/0.1.1"
             GRAPHITE_ACCESS_TOKEN: $(GF_API_KEY)
             GRAPHITE_METRICS_PREFIX: tibber

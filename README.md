@@ -19,9 +19,9 @@ See [here](https://github.com/stefanes/PSTibber#authentication) and [here](https
 
 ## Usage examples
 
-### Get today's or tomorrow's energy prices
+### Get today's and tomorrow's energy prices
 
-Use [`tibber-price.ps1`](tibber-price.ps1) to get tomorrow's (or today's) energy prices and publish the data (if the `-Publish` switch is provided) in the following Graphite series:
+Use [`tibber-price-json.ps1`](tibber-price-json.ps1) to get today's and tomorrow's energy prices and  and [`tibber-price-publish.ps1`](tibber-price-publish.ps1) to publish the data to the following Graphite series:
 
 | Graphite series            | Measurement | Unit        | Resolution |
 | -------------------------- | ----------- | ----------- | ---------- |
@@ -41,16 +41,16 @@ The `tibber.hourly.priceLevel` series contains the price levels as defined [here
 
 The `tibber.hourly.priceScore` series contains a custom price score as defined below:
 
-| Price score | Value | Definition                              |
-| ----------- | ----- | --------------------------------------- |
-| `LOW`       | -1    | The 8 most expensive hours              |
-| `MEDIUM`    | 0     | The 8 hours not scoring `LOW` or `HIGH` |
-| `HIGH`      | 1     | The 8 cheapest hours                    |
+| Price score | Value | Definition                                     |
+| ----------- | ----- | ---------------------------------------------- |
+| `LOW`       | -1    | The 8 most expensive hours                     |
+| `MEDIUM`    | 0     | The remaining 8 hours not scoring `LOW`/`HIGH` |
+| `HIGH`      | 1     | The 8 cheapest hours                           |
 
-Tomorrow's energy prices, display in terminal and publish to Graphite:
+Get today's and tomorrow's energy prices:
 
 ```powershell
-PS> .\tibber-price.ps1 -Tomorrow -Publish -Verbose
+PS> .\tibber-price-json.ps1 -Path 'C:\tibber'
 Home ID for 'Vitahuset': 96a14971-525a-4420-aae9-e5aedaa129ff
 Energy price (W. Europe Standard Time):
     0.7542 SEK at 2022-09-23 00:00:00 [level = 10] [score = 1]
@@ -59,32 +59,26 @@ Energy price (W. Europe Standard Time):
     1.0319 SEK at 2022-09-23 22:00:00 [level = 10] [score = 1]
     0.8517 SEK at 2022-09-23 23:00:00 [level = 10] [score = 1]
 
-Status |  Published Invalid
------- -  --------- -------
-   200 OK 24        0
-
-
-Status |  Published Invalid
------- -  --------- -------
-   200 OK 24        0
+Energy price (W. Europe Standard Time):
+    0.7041 SEK at 2022-09-24 00:00:00 [level = 10] [score = 1]
+    0.7333 SEK at 2022-09-24 01:00:00 [level = 10] [score = 1]
+    ...
+    1.0208 SEK at 2022-09-24 22:00:00 [level = 10] [score = 1]
+    0.9851 SEK at 2022-09-24 23:00:00 [level = 10] [score = 1]
 ```
 
-Today's energy prices (only display in terminal, do not publish to Graphite):
+Publish today's and tomorrow's energy prices to Graphite:
 
 ```powershell
-PS> .\tibber-price.ps1 -Today
-Home ID for 'Vitahuset': 96a14971-525a-4420-aae9-e5aedaa129ff
-Energy price (W. Europe Standard Time):
-    0.7542 SEK at 2022-09-23 00:00:00 [level = 10] [score = 1]
-    0.7113 SEK at 2022-09-23 01:00:00 [level = 10] [score = 1]
-    ...
-    1.0319 SEK at 2022-09-23 22:00:00 [level = 10] [score = 1]
-    0.8517 SEK at 2022-09-23 23:00:00 [level = 10] [score = 1]
+PS> .\tibber-price-publish.ps1 -Path 'C:\tibber'
+Status |  Published Invalid
+------ -  --------- -------
+   200 OK 144       0
 ```
 
 ### Get hourly/daily energy consumption
 
-Use [`tibber-consumption.ps1`](tibber-consumption.ps1) to get the billed consumption and publish the data (if the `-Publish` switch is provided) in the following Graphite series:
+Use [`tibber-consumption.ps1`](tibber-consumption.ps1) to get the billed consumption and publish the data (if the `-Publish` switch is provided) to the following Graphite series:
 
 | Graphite series             | Measurement   | Unit | Resolution |
 | --------------------------- | ------------- | ---- | ---------- |
@@ -120,7 +114,7 @@ Daily consumption from 2022-09-22 00:00:00 to 2022-09-23 00:00:00 (W. Europe Sta
 
 ### Get hourly/daily energy production
 
-Use [`tibber-production.ps1`](tibber-production.ps1) to get the billed production and publish the data (if the `-Publish` switch is provided) in the following Graphite series:
+Use [`tibber-production.ps1`](tibber-production.ps1) to get the billed production and publish the data (if the `-Publish` switch is provided) to the following Graphite series:
 
 | Graphite series            | Measurement  | Unit | Resolution |
 | -------------------------- | ------------ | ---- | ---------- |
@@ -156,7 +150,7 @@ Daily production from 2022-09-22 00:00:00 to 2022-09-23 00:00:00 (W. Europe Stan
 
 ### Get live measurements
 
-Use [`tibber-live.ps1`](tibber-live.ps1) to get live measurements and publish the data (if the `-Publish` switch is provided) in the following Graphite series:
+Use [`tibber-live.ps1`](tibber-live.ps1) to get live measurements and publish the data (if the `-Publish` switch is provided) to the following Graphite series:
 
 | Graphite series               | Measurement       | Unit | Resolution |
 | ----------------------------- | ----------------- | ---- | ---------- |
@@ -215,7 +209,7 @@ See [here](https://grafana.com/docs/grafana-cloud/data-configuration/metrics/met
 Running these scripts on e.g. Azure Pipelines agent will by default log UTC times. To change this behaviour provide a time zone using the `-TimeZone` parameter:
 
 ```powershell
-PS> .\tibber-price.ps1 -Today -TimeZone 'India Standard Time'
+PS> .\tibber-price-json.ps1 -Path 'C:\tibber' -TimeZone 'India Standard Time'
 Home ID for 'Vitahuset': 96a14971-525a-4420-aae9-e5aedaa129ff
 Energy price (India Standard Time):
     0.7542 SEK at 2022-09-23 03:30:00 [level = 10] [score = 1]
@@ -223,6 +217,7 @@ Energy price (India Standard Time):
     ...
     1.0319 SEK at 2022-09-24 01:30:00 [level = 10] [score = 1]
     0.8517 SEK at 2022-09-24 02:30:00 [level = 10] [score = 1]
+...
 ```
 
 List all available time zones:

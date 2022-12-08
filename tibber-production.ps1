@@ -10,7 +10,7 @@ Import-Module -Name PSTibber -Force -PassThru
 Import-Module -Name PSGraphite -Force -PassThru
 Import-Module -Name $PSScriptRoot\tibber-pulse.psd1 -Force -PassThru
 
-# Set Log verbosity
+# Set log verbosity
 $dbgpref = $global:DebugPreference
 $vrbpref = $global:VerbosePreference
 $global:DebugPreference = $DebugPreference
@@ -106,6 +106,6 @@ if ($Publish.IsPresent) {
     }
 }
 
-# Reset Log verbosity
+# Reset log verbosity
 $global:DebugPreference = $dbgpref
 $global:VerbosePreference = $vrbpref
