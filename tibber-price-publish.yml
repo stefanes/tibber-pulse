@@ -17,7 +17,7 @@ variables:
 resources:
   pipelines:
     - pipeline: tibber-price-json
-      source: \tibber-price-json
+      source: \tibber-price-json-backup
       branch: main
   repositories:
     # See https://github.com/stefanes/azure-pipelines
@@ -39,7 +39,7 @@ jobs:
           allowPrerelease: false
           reinstall: true
 
-      - download: tibber-price-json-backup
+      - download: tibber-price-json
         artifact: tibber-price
         displayName: Download Tibber price info
 
