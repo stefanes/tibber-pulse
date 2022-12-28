@@ -1,7 +1,8 @@
 [CmdletBinding()]
 param (
     [string] $Path = '.',
-    [string] $TimeZone = [TimeZoneInfo]::Local.Id
+    [string] $TimeZone = [TimeZoneInfo]::Local.Id,
+    [switch] $ExcludeTomorrow
 )
 
 # Import required modules
@@ -28,9 +29,11 @@ $priceInfoMetrics = @()
 $priceInfo = Get-TibberPriceInfo @splat -IncludeToday
 $priceInfoMetrics += Get-PriceInfoMetrics -PriceInfo $priceInfo -TimeZone $TimeZone
 
-# Get tomorrow's price info
-$priceInfo = Get-TibberPriceInfo @splat -IncludeTomorrow
-$priceInfoMetrics += Get-PriceInfoMetrics -PriceInfo $priceInfo -TimeZone $TimeZone
+if (-Not $ExcludeTomorrow.IsPresent) {
+    # Get tomorrow's price info
+    $priceInfo = Get-TibberPriceInfo @splat -IncludeTomorrow
+    $priceInfoMetrics += Get-PriceInfoMetrics -PriceInfo $priceInfo -TimeZone $TimeZone
+}
 
 $priceInfoMetrics | ConvertTo-Json -Depth 10 | Out-File -FilePath "$Path\tibber-price.json"
 
