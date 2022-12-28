@@ -1,8 +1,8 @@
 trigger: none
 
 schedules:
-  - cron: "0 * * * *"
-    displayName: At minute 0
+  - cron: "0 0 * * *"
+    displayName: At 00:00 # UTC = 01:00 CET/02:00 CEST
     branches:
       include:
         - main
@@ -15,10 +15,6 @@ variables:
   - group: tibber-pulse
 
 resources:
-  pipelines:
-    - pipeline: tibber-price-json
-      source: \tibber-price-json
-      branch: main
   repositories:
     # See https://github.com/stefanes/azure-pipelines
     - repository: templates
@@ -39,16 +35,16 @@ jobs:
           allowPrerelease: false
           reinstall: true
 
-      - download: tibber-price-json-backup
-        artifact: tibber-price
-        displayName: Download Tibber price info
-
       - template: invoke-expressionwithretry.yml@templates
         parameters:
-          expression: .\tibber-price-publish.ps1 -Path '$(Pipeline.Workspace)\tibber-price-json\tibber-price'
-          displayName: Publish price info metrics
+          expression: .\tibber-price-json.ps1 -Path '$(Pipeline.Workspace)' -TimeZone 'W. Europe Standard Time' -ExcludeTomorrow
+          displayName: Get price info metrics
           env:
             TIBBER_ACCESS_TOKEN: $(TIBBER_API_KEY)
             TIBBER_USER_AGENT: "stefanes.tibber-pulse/0.1.1"
             GRAPHITE_ACCESS_TOKEN: $(GF_API_KEY)
             GRAPHITE_METRICS_PREFIX: tibber
+
+      - publish: "$(Pipeline.Workspace)/tibber-price.json"
+        artifact: tibber-price
+        displayName: Publish Tibber price info
