@@ -41,11 +41,11 @@ The `tibber.hourly.priceLevel` series contains the price levels as defined [here
 
 The `tibber.hourly.priceScore` series contains a custom price score as defined below:
 
-| Price score | Value | Definition                                     |
-| ----------- | ----- | ---------------------------------------------- |
-| `LOW`       | -1    | The 8 most expensive hours                     |
-| `MEDIUM`    | 0     | The remaining 8 hours not scoring `LOW`/`HIGH` |
-| `HIGH`      | 1     | The 8 cheapest hours                           |
+| Price score | Value | Definition                        |
+| ----------- | ----- | --------------------------------- |
+| `LOW`       | -1    | A price higher than average + 10% |
+| `MEDIUM`    | 0     | Average price +/- 10%             |
+| `HIGH`      | 1     | A price lower than average - 10%  |
 
 Get today's and tomorrow's energy prices:
 

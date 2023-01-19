@@ -48,11 +48,28 @@ function Get-PriceInfoMetrics {
     # Make sure we do not have duplicates
     $PriceInfo = $PriceInfo | Sort-Object { $_.startsAt } -Unique
 
-    # Sort by 'total' and split into buckets
-    $priceSorted = $PriceInfo | Sort-Object -Property total -Descending
-    $priceScoreLow = $priceSorted[0..7] # expensive
-    $priceScoreMedium = $priceSorted[8..15] # normal
-    $priceScoreHigh = $priceSorted[16..23] # cheap
+    # Calculate price thresholds
+    $sum = 0
+    $PriceInfo | ForEach-Object { $sum += $_.total }
+    $avgPrice = $sum / 24
+    $highTh = $avgPrice * 1.1
+    $lowTh = $avgPrice * 0.9
+
+    # Split into buckets compared to the average price +/- 10%
+    $priceScoreLow = @() # expensive
+    $priceScoreMedium = @() # normal
+    $priceScoreHigh = @() # cheap
+    $PriceInfo | ForEach-Object {
+        if ($_.total -gt $highTh) {
+            $priceScoreLow += $_
+        }
+        elseif ($_.total -lt $lowTh) {
+            $priceScoreHigh += $_
+        }
+        else {
+            $priceScoreMedium += $_
+        }
+    }
 
     # Constrict price info metrics
     Write-Host "Energy price ($TimeZone):"
