@@ -54,6 +54,7 @@ function Get-PriceInfoMetrics {
     $avgPrice = $sum / 24
     $highTh = $avgPrice * 1.1
     $lowTh = $avgPrice * 0.9
+    Write-Host "Average energy price: $($avgPrice.ToString('0.00')) $($PriceInfo[0].currency) [scorecard = low > $($highTh.ToString('0.00')) > medium > $($lowTh.ToString('0.00')) > high]"
 
     # Split into buckets compared to the average price +/- 10%
     $priceScoreLow = @() # expensive
