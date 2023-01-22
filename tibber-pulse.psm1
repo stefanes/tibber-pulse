@@ -123,6 +123,7 @@ function Get-PriceInfoMetrics {
                 price      = $_.total
                 priceLevel = $priceLevel
                 priceScore = $priceScore
+                priceAvg   = $avgPrice
                 timestamp  = $timestamp
                 time       = $tibberTimestamp
             }

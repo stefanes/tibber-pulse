@@ -33,6 +33,11 @@ $priceInfo | ForEach-Object {
             value = $_.priceScore
             time  = $_.timestamp
         }
+        @{
+            name  = "$env:GRAPHITE_METRICS_PREFIX.hourly.priceAvg"
+            value = $_.priceAvg
+            time  = $_.timestamp
+        }
     )
 }
 
