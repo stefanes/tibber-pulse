@@ -17,7 +17,8 @@ variables:
 resources:
   pipelines:
     - pipeline: tibber-price-json
-      source: \tibber-price-json-backup
+      source: \tibber-price-json
+      # source: \tibber-price-json-backup
       branch: main
   repositories:
     # See https://github.com/stefanes/azure-pipelines
