@@ -63,11 +63,9 @@ function Get-PriceInfoMetrics {
     $PriceInfo | ForEach-Object {
         if ($_.total -gt $highTh) {
             $priceScoreLow += $_
-        }
-        elseif ($_.total -lt $lowTh) {
+        } elseif ($_.total -lt $lowTh) {
             $priceScoreHigh += $_
-        }
-        else {
+        } else {
             $priceScoreMedium += $_
         }
     }
@@ -104,11 +102,9 @@ function Get-PriceInfoMetrics {
         # Calculate price score
         if ($priceScoreLow -contains $_) {
             $priceScore = $score.LOW # expensive
-        }
-        elseif ($priceScoreMedium -contains $_) {
+        } elseif ($priceScoreMedium -contains $_) {
             $priceScore = $score.MEDIUM # normal
-        }
-        elseif ($priceScoreHigh -contains $_) {
+        } elseif ($priceScoreHigh -contains $_) {
             $priceScore = $score.HIGH # cheap
         }
 
@@ -200,8 +196,7 @@ function Send-LiveMetricsToGraphite {
         if ($signalStrengthMetrics) {
             Send-Metrics $signalStrengthMetrics
         }
-    }
-    else {
+    } else {
         Write-Host "Note: Not publishing metrics to Graphite..." -ForegroundColor DarkGray
     }
 }
@@ -218,8 +213,7 @@ $tibberDefaultMetrics = 'tibber'
 if ($env:TIBBER_ACCESS_TOKEN -eq $tibberDemoToken) {
     $env:GRAPHITE_METRICS_PREFIX = $tibberDemoMetrics
     Write-Warning "Using demo token, GRAPHITE_METRICS_PREFIX set to '$tibberDemoMetrics'"
-}
-else {
+} else {
     if (-Not $env:GRAPHITE_METRICS_PREFIX -Or $env:GRAPHITE_METRICS_PREFIX -eq $tibberDemoMetrics) {
         $env:GRAPHITE_METRICS_PREFIX = $tibberDefaultMetrics
         Write-Warning "GRAPHITE_METRICS_PREFIX set to '$tibberDefaultMetrics'"

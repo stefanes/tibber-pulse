@@ -45,14 +45,12 @@ if (-Not $Daily.IsPresent) {
                     time  = $timestamp
                 }
             )
-        }
-        else {
+        } else {
             Write-Host "    No data"
         }
     }
     $hourlyConsumptionMetrics = Get-GraphiteMetric -Metrics $hourlyConsumptionMetrics -IntervalInSeconds 3600 # 1 hour
-}
-else {
+} else {
     # Get daily consumption
     $dailyConsumption = Get-TibberConsumption -HomeId $homeId -Resolution DAILY
     if ($dailyConsumption) {
@@ -62,6 +60,7 @@ else {
         Write-Host "Daily consumption from $from to $to ($TimeZone):"
         Write-Host "    $($dailyConsumption.consumption * 1000) Wh"
         Write-Host "    $(($dailyConsumption.cost).ToString("0.00")) $($dailyConsumption.currency)"
+        Write-Host "    $(($dailyConsumption.cost / $dailyConsumption.consumption).ToString("0.00")) $($dailyConsumption.currency)/kWh"
 
         $timestamp = Get-GraphiteTimestamp -Timestamp $tibberTimestamp
         $dailyConsumptionMetrics = Get-GraphiteMetric -Metrics @(
@@ -75,9 +74,13 @@ else {
                 value = $dailyConsumption.cost
                 time  = $timestamp
             }
+            @{
+                name  = "$env:GRAPHITE_METRICS_PREFIX.daily.myPriceAvg"
+                value = ($dailyConsumption.cost / $dailyConsumption.consumption)
+                time  = $timestamp
+            }
         ) -IntervalInSeconds 86400 # 24 hours
-    }
-    else {
+    } else {
         Write-Warning "No daily consumption available"
     }
 }
@@ -97,6 +100,13 @@ if ($Publish.IsPresent) {
         # Add build tag(s)
         Write-Host "##[command][build.addbuildtag]daily"
         Write-Host "##vso[build.addbuildtag]daily"
+    }
+} else {
+    if ($hourlyConsumptionMetrics) {
+        $hourlyConsumptionMetrics | Out-File -FilePath "$PSScriptRoot\tibber-consumption-hourly.json" -Force
+    }
+    if ($dailyConsumptionMetrics) {
+        $dailyConsumptionMetrics | Out-File -FilePath "$PSScriptRoot\tibber-consumption-daily.json" -Force
     }
 }
 

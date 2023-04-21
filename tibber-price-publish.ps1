@@ -1,6 +1,7 @@
 [CmdletBinding(DefaultParameterSetName = 'Tomorrow')]
 param (
-    [string] $Path = '.'
+    [string] $Path = '.',
+    [switch] $SkipPublish
 )
 
 # Import required modules
@@ -15,7 +16,14 @@ $global:VerbosePreference = $VerbosePreference
 
 $priceInfo = Get-Content -Raw -Path "$Path\tibber-price.json" | ConvertFrom-Json
 
-$priceInfoMetrics = @()
+$priceInfoMetrics = @(
+    @{
+        name     = "$env:GRAPHITE_METRICS_PREFIX.daily.priceAvg"
+        value    = $priceInfo[0].priceAvg
+        time     = $priceInfo[0].timestamp
+        interval = 86400 # 1 day
+    }
+)
 $priceInfo | ForEach-Object {
     $priceInfoMetrics += @(
         @{
@@ -41,9 +49,13 @@ $priceInfo | ForEach-Object {
     )
 }
 
-# Send metrics to Graphite
 $priceInfoMetrics = Get-GraphiteMetric -Metrics $priceInfoMetrics -IntervalInSeconds 3600 # 1 hour
-Send-Metrics $priceInfoMetrics
+if (-Not $SkipPublish.IsPresent) {
+    # Send metrics to Graphite
+    Send-Metrics $priceInfoMetrics
+} else {
+    $priceInfoMetrics | Out-File -FilePath "$PSScriptRoot\tibber-price-publish.json" -Force
+}
 
 # Reset log verbosity
 $global:DebugPreference = $dbgpref

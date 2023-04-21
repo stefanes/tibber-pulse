@@ -45,20 +45,17 @@ if (-Not $Daily.IsPresent) {
                     time  = $timestamp
                 }
             )
-        }
-        else {
+        } else {
             Write-Host "    No data"
         }
     }
 
     if ($hourlyProductionMetrics) {
         $hourlyProductionMetrics = Get-GraphiteMetric -Metrics $hourlyProductionMetrics -IntervalInSeconds 3600 # 1 hour
-    }
-    else {
+    } else {
         Write-Warning "No hourly production available"
     }
-}
-else {
+} else {
     # Get daily production
     $dailyProduction = Get-TibberProduction -HomeId $homeId -Resolution DAILY
     if ($dailyProduction) {
@@ -82,8 +79,7 @@ else {
                 time  = $timestamp
             }
         ) -IntervalInSeconds 86400 # 24 hours
-    }
-    else {
+    } else {
         Write-Warning "No daily production available"
     }
 }
@@ -103,6 +99,13 @@ if ($Publish.IsPresent) {
         # Add build tag(s)
         Write-Host "##[command][build.addbuildtag]daily"
         Write-Host "##vso[build.addbuildtag]daily"
+    }
+} else {
+    if ($hourlyProductionMetrics) {
+        $hourlyProductionMetrics | Out-File -FilePath "$PSScriptRoot\tibber-production-hourly.json" -Force
+    }
+    if ($dailyProductionMetrics) {
+        $dailyProductionMetrics | Out-File -FilePath "$PSScriptRoot\tibber-production-daily.json" -Force
     }
 }
 
