@@ -16,37 +16,52 @@ $global:VerbosePreference = $VerbosePreference
 
 $priceInfo = Get-Content -Raw -Path "$Path\tibber-price.json" | ConvertFrom-Json
 
-$priceInfoMetrics = @(
-    @{
-        name     = "$env:GRAPHITE_METRICS_PREFIX.daily.priceAvg"
-        value    = $priceInfo[0].priceAvg
-        time     = $priceInfo[0].timestamp
-        interval = 86400 # 1 day
-    }
-)
+$priceInfoMetrics = @()
 $priceInfo | ForEach-Object {
-    $priceInfoMetrics += @(
-        @{
-            name  = "$env:GRAPHITE_METRICS_PREFIX.hourly.price"
-            value = $_.price
-            time  = $_.timestamp
-        }
-        @{
-            name  = "$env:GRAPHITE_METRICS_PREFIX.hourly.priceLevel"
-            value = $_.priceLevel
-            time  = $_.timestamp
-        }
-        @{
-            name  = "$env:GRAPHITE_METRICS_PREFIX.hourly.priceScore"
-            value = $_.priceScore
-            time  = $_.timestamp
-        }
-        @{
-            name  = "$env:GRAPHITE_METRICS_PREFIX.hourly.priceAvg"
-            value = $_.priceAvg
-            time  = $_.timestamp
-        }
-    )
+    if ($_.price) {
+        $priceInfoMetrics += @(
+            @{
+                name  = "$env:GRAPHITE_METRICS_PREFIX.hourly.price"
+                value = $_.price
+                time  = $_.timestamp
+            }
+            @{
+                name  = "$env:GRAPHITE_METRICS_PREFIX.hourly.priceLevel"
+                value = $_.priceLevel
+                time  = $_.timestamp
+            }
+            @{
+                name  = "$env:GRAPHITE_METRICS_PREFIX.hourly.priceScore"
+                value = $_.priceScore
+                time  = $_.timestamp
+            }
+            @{
+                name  = "$env:GRAPHITE_METRICS_PREFIX.hourly.priceAvg"
+                value = $_.priceAvg
+                time  = $_.timestamp
+            }
+        )
+    }
+
+    if ($_.priceAvgToday) {
+        $priceInfoMetrics += @(    @{
+                name     = "$env:GRAPHITE_METRICS_PREFIX.daily.priceAvg"
+                value    = $_.priceAvgToday
+                time     = $_.timestamp
+                interval = 86400 # 1 day
+            }
+        )
+    }
+
+    if ($_.priceAvgTomorrow) {
+        $priceInfoMetrics += @(    @{
+                name     = "$env:GRAPHITE_METRICS_PREFIX.daily.priceAvg"
+                value    = $_.priceAvgTomorrow
+                time     = $_.timestamp
+                interval = 86400 # 1 day
+            }
+        )
+    }
 }
 
 $priceInfoMetrics = Get-GraphiteMetric -Metrics $priceInfoMetrics -IntervalInSeconds 3600 # 1 hour

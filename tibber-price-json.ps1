@@ -27,14 +27,23 @@ $priceInfoMetrics = @()
 
 # Get today's price info
 $priceInfo = Get-TibberPriceInfo @splat -IncludeToday
-$priceInfoMetrics += Get-PriceInfoMetrics -PriceInfo $priceInfo -TimeZone $TimeZone
+$todaysPriceInfoMetrics = Get-PriceInfoMetrics -PriceInfo $priceInfo -TimeZone $TimeZone
+$priceInfoMetrics += $todaysPriceInfoMetrics
+$priceInfoMetrics += @{
+    priceAvgToday = $todaysPriceInfoMetrics[0].priceAvg
+    timestamp     = $todaysPriceInfoMetrics[0].timestamp
+}
 
 if (-Not $ExcludeTomorrow.IsPresent) {
     # Get tomorrow's price info
     $priceInfo = Get-TibberPriceInfo @splat -IncludeTomorrow
-    $priceInfoMetrics += Get-PriceInfoMetrics -PriceInfo $priceInfo -TimeZone $TimeZone
+    $tomorrowsPriceInfoMetrics = Get-PriceInfoMetrics -PriceInfo $priceInfo -TimeZone $TimeZone
+    $priceInfoMetrics += $tomorrowsPriceInfoMetrics
+    $priceInfoMetrics += @{
+        priceAvgTomorrow = $tomorrowsPriceInfoMetrics[0].priceAvg
+        timestamp        = $tomorrowsPriceInfoMetrics[0].timestamp
+    }
 }
-
 $priceInfoMetrics | ConvertTo-Json -Depth 10 | Out-File -FilePath "$Path\tibber-price.json"
 
 # Reset log verbosity
