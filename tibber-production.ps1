@@ -65,6 +65,7 @@ if (-Not $Daily.IsPresent) {
         Write-Host "Daily production from $from to $to ($TimeZone):"
         Write-Host "    $($dailyProduction.production * 1000) Wh"
         Write-Host "    $(($dailyProduction.profit).ToString("0.00")) $($dailyProduction.currency)"
+        Write-Host "    $(($dailyProduction.profit / $dailyProduction.production).ToString("0.00")) $($dailyProduction.currency)/kWh"
 
         $timestamp = Get-GraphiteTimestamp -Timestamp $tibberTimestamp -AddSeconds -3600 # 1 hour
         $dailyProductionMetrics = Get-GraphiteMetric -Metrics @(
@@ -76,6 +77,11 @@ if (-Not $Daily.IsPresent) {
             @{
                 name  = "$env:GRAPHITE_METRICS_PREFIX.daily.profit"
                 value = $dailyProduction.profit
+                time  = $timestamp
+            }
+            @{
+                name  = "$env:GRAPHITE_METRICS_PREFIX.daily.myProfitAvg"
+                value = ($dailyProduction.profit / $dailyProduction.production)
                 time  = $timestamp
             }
         ) -IntervalInSeconds 86400 # 24 hours
