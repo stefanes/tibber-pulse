@@ -56,7 +56,7 @@ if (-Not $Daily.IsPresent) {
     if ($dailyConsumption) {
         $tibberTimestamp = $dailyConsumption.to
         $from = ([TimeZoneInfo]::ConvertTime([DateTime]::Parse($dailyConsumption.from, [CultureInfo]::InvariantCulture), [TimeZoneInfo]::FindSystemTimeZoneById($TimeZone))).ToString('yyyy-MM-dd HH:mm')
-        $to = ([TimeZoneInfo]::ConvertTime([DateTime]::Parse($tibberTimestamp, [CultureInfo]::InvariantCulture), [TimeZoneInfo]::FindSystemTimeZoneById($TimeZone))).AddSeconds(-3600).ToString('yyyy-MM-dd HH:mm')
+        $to = ([TimeZoneInfo]::ConvertTime([DateTime]::Parse($tibberTimestamp, [CultureInfo]::InvariantCulture), [TimeZoneInfo]::FindSystemTimeZoneById($TimeZone))).AddSeconds(-1).ToString('yyyy-MM-dd HH:mm')
         Write-Host "Daily consumption from $from to $to ($TimeZone):"
         Write-Host "    $($dailyConsumption.consumption * 1000) Wh"
         Write-Host "    $(($dailyConsumption.cost).ToString("0.00")) $($dailyConsumption.currency)"

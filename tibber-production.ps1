@@ -61,12 +61,12 @@ if (-Not $Daily.IsPresent) {
     if ($dailyProduction) {
         $tibberTimestamp = $dailyProduction.to
         $from = ([TimeZoneInfo]::ConvertTime([DateTime]::Parse($dailyProduction.from, [CultureInfo]::InvariantCulture), [TimeZoneInfo]::FindSystemTimeZoneById($TimeZone))).ToString('yyyy-MM-dd HH:mm')
-        $to = ([TimeZoneInfo]::ConvertTime([DateTime]::Parse($tibberTimestamp, [CultureInfo]::InvariantCulture), [TimeZoneInfo]::FindSystemTimeZoneById($TimeZone))).ToString('yyyy-MM-dd HH:mm')
+        $to = ([TimeZoneInfo]::ConvertTime([DateTime]::Parse($tibberTimestamp, [CultureInfo]::InvariantCulture), [TimeZoneInfo]::FindSystemTimeZoneById($TimeZone))).AddMinutes(-1).ToString('yyyy-MM-dd HH:mm')
         Write-Host "Daily production from $from to $to ($TimeZone):"
         Write-Host "    $($dailyProduction.production * 1000) Wh"
         Write-Host "    $(($dailyProduction.profit).ToString("0.00")) $($dailyProduction.currency)"
 
-        $timestamp = Get-GraphiteTimestamp -Timestamp $tibberTimestamp
+        $timestamp = Get-GraphiteTimestamp -Timestamp $tibberTimestamp -AddSeconds -3600 # 1 hour
         $dailyProductionMetrics = Get-GraphiteMetric -Metrics @(
             @{
                 name  = "$env:GRAPHITE_METRICS_PREFIX.daily.production"
