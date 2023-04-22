@@ -32,6 +32,7 @@ $priceInfoMetrics += $todaysPriceInfoMetrics
 $priceInfoMetrics += @{
     priceAvgToday = $todaysPriceInfoMetrics[0].priceAvg
     timestamp     = $todaysPriceInfoMetrics[0].timestamp
+    time          = $todaysPriceInfoMetrics[0].time
 }
 
 if (-Not $ExcludeTomorrow.IsPresent) {
@@ -42,6 +43,7 @@ if (-Not $ExcludeTomorrow.IsPresent) {
     $priceInfoMetrics += @{
         priceAvgTomorrow = $tomorrowsPriceInfoMetrics[0].priceAvg
         timestamp        = $tomorrowsPriceInfoMetrics[0].timestamp
+        time             = $tomorrowsPriceInfoMetrics[0].time
     }
 }
 $priceInfoMetrics | ConvertTo-Json -Depth 10 | Out-File -FilePath "$Path\tibber-price.json"

@@ -44,7 +44,8 @@ $priceInfo | ForEach-Object {
     }
 
     if ($_.priceAvgToday) {
-        $priceInfoMetrics += @(    @{
+        $priceInfoMetrics += @(
+            @{
                 name     = "$env:GRAPHITE_METRICS_PREFIX.daily.priceAvg"
                 value    = $_.priceAvgToday
                 time     = $_.timestamp
@@ -54,7 +55,8 @@ $priceInfo | ForEach-Object {
     }
 
     if ($_.priceAvgTomorrow) {
-        $priceInfoMetrics += @(    @{
+        $priceInfoMetrics += @(
+            @{
                 name     = "$env:GRAPHITE_METRICS_PREFIX.daily.priceAvg"
                 value    = $_.priceAvgTomorrow
                 time     = $_.timestamp
