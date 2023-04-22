@@ -30,9 +30,9 @@ $priceInfo = Get-TibberPriceInfo @splat -IncludeToday
 $todaysPriceInfoMetrics = Get-PriceInfoMetrics -PriceInfo $priceInfo -TimeZone $TimeZone
 $priceInfoMetrics += $todaysPriceInfoMetrics
 $priceInfoMetrics += @{
-    priceAvgToday = $todaysPriceInfoMetrics[0].priceAvg
-    timestamp     = $todaysPriceInfoMetrics[0].timestamp
-    time          = $todaysPriceInfoMetrics[0].time
+    priceAvgToday = $todaysPriceInfoMetrics[-1].priceAvg
+    time          = $todaysPriceInfoMetrics[-1].time
+    startsAt      = $todaysPriceInfoMetrics[-1].startsAt
 }
 
 if (-Not $ExcludeTomorrow.IsPresent) {
@@ -41,9 +41,9 @@ if (-Not $ExcludeTomorrow.IsPresent) {
     $tomorrowsPriceInfoMetrics = Get-PriceInfoMetrics -PriceInfo $priceInfo -TimeZone $TimeZone
     $priceInfoMetrics += $tomorrowsPriceInfoMetrics
     $priceInfoMetrics += @{
-        priceAvgTomorrow = $tomorrowsPriceInfoMetrics[0].priceAvg
-        timestamp        = $tomorrowsPriceInfoMetrics[0].timestamp
-        time             = $tomorrowsPriceInfoMetrics[0].time
+        priceAvgTomorrow = $tomorrowsPriceInfoMetrics[-1].priceAvg
+        time             = $tomorrowsPriceInfoMetrics[-1].time
+        startsAt         = $tomorrowsPriceInfoMetrics[-1].startsAt
     }
 }
 $priceInfoMetrics | ConvertTo-Json -Depth 10 | Out-File -FilePath "$Path\tibber-price.json"

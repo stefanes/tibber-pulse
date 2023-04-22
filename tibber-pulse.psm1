@@ -51,10 +51,10 @@ function Get-PriceInfoMetrics {
     # Calculate price thresholds
     $sum = 0
     $PriceInfo | ForEach-Object { $sum += $_.total }
-    $avgPrice = $sum / 24
-    $highTh = $avgPrice * 1.1
-    $lowTh = $avgPrice * 0.9
-    Write-Host "Average energy price: $($avgPrice.ToString('0.00')) $($PriceInfo[0].currency) [scorecard = low > $($highTh.ToString('0.00')) > medium > $($lowTh.ToString('0.00')) > high]"
+    $priceAvg = $sum / 24
+    $highTh = $priceAvg * 1.1
+    $lowTh = $priceAvg * 0.9
+    Write-Host "Average energy price: $($priceAvg.ToString('0.00')) $($PriceInfo[0].currency) [scorecard = low > $($highTh.ToString('0.00')) > medium > $($lowTh.ToString('0.00')) > high]"
 
     # Split into buckets compared to the average price +/- 10%
     $priceScoreLow = @() # expensive
@@ -119,9 +119,9 @@ function Get-PriceInfoMetrics {
                 price      = $_.total
                 priceLevel = $priceLevel
                 priceScore = $priceScore
-                priceAvg   = $avgPrice
-                timestamp  = $timestamp
-                time       = $tibberTimestamp
+                priceAvg   = $priceAvg
+                time       = $timestamp
+                startsAt   = $tibberTimestamp
             }
         )
     }

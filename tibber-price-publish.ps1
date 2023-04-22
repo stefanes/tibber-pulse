@@ -23,22 +23,22 @@ $priceInfo | ForEach-Object {
             @{
                 name  = "$env:GRAPHITE_METRICS_PREFIX.hourly.price"
                 value = $_.price
-                time  = $_.timestamp
+                time  = $_.time
             }
             @{
                 name  = "$env:GRAPHITE_METRICS_PREFIX.hourly.priceLevel"
                 value = $_.priceLevel
-                time  = $_.timestamp
+                time  = $_.time
             }
             @{
                 name  = "$env:GRAPHITE_METRICS_PREFIX.hourly.priceScore"
                 value = $_.priceScore
-                time  = $_.timestamp
+                time  = $_.time
             }
             @{
                 name  = "$env:GRAPHITE_METRICS_PREFIX.hourly.priceAvg"
                 value = $_.priceAvg
-                time  = $_.timestamp
+                time  = $_.time
             }
         )
     }
@@ -48,7 +48,7 @@ $priceInfo | ForEach-Object {
             @{
                 name     = "$env:GRAPHITE_METRICS_PREFIX.daily.priceAvg"
                 value    = $_.priceAvgToday
-                time     = $_.timestamp
+                time     = $_.time
                 interval = 86400 # 1 day
             }
         )
@@ -59,7 +59,7 @@ $priceInfo | ForEach-Object {
             @{
                 name     = "$env:GRAPHITE_METRICS_PREFIX.daily.priceAvg"
                 value    = $_.priceAvgTomorrow
-                time     = $_.timestamp
+                time     = $_.time
                 interval = 86400 # 1 day
             }
         )
