@@ -1,7 +1,7 @@
 ﻿function Get-HomeId {
     $myHome = (Get-TibberHome -Fields 'id', 'appNickname')[0]
     $homeId = $myHome.id
-    Write-Host "Home ID for '$($myHome.appNickname)': $homeId"
+    #Write-Host "Home ID for '$($myHome.appNickname)': $homeId"
 
     # Output object
     $homeId

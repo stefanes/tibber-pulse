@@ -28,6 +28,8 @@ Use [`tibber-price-json.ps1`](tibber-price-json.ps1) to get today's and tomorrow
 | `tibber.hourly.price`      | `total`     | SEK         | 1h         |
 | `tibber.hourly.priceLevel` | `level`     | _See below_ | 1h         |
 | `tibber.hourly.priceScore` | N/A         | _See below_ | 1h         |
+| `tibber.hourly.priceAvg`   | N/A         | SEK         | 1h         |
+| `tibber.daily.priceAvg`    | N/A         | SEK         | 1d         |
 
 The `tibber.hourly.priceLevel` series contains the price levels as defined [here](https://developer.tibber.com/docs/reference#pricelevel), translated into the following values:
 
@@ -51,7 +53,7 @@ Get today's and tomorrow's energy prices:
 
 ```powershell
 PS> .\tibber-price-json.ps1 -Path 'C:\tibber'
-Home ID for 'Vitahuset': 96a14971-525a-4420-aae9-e5aedaa129ff
+...
 Energy price (W. Europe Standard Time):
     0.7542 SEK at 2022-09-23 00:00:00 [level = 10] [score = 1]
     0.7113 SEK at 2022-09-23 01:00:00 [level = 10] [score = 1]
@@ -91,7 +93,7 @@ Today's hourly energy consumption (last 24 hours):
 
 ```powershell
 PS> .\tibber-consumption.ps1
-Home ID for 'Vitahuset': 96a14971-525a-4420-aae9-e5aedaa129ff
+...
 Hourly consumption (W. Europe Standard Time)...
 From 2022-09-23 02:00:00 to 2022-09-23 03:00:00 (W. Europe Standard Time):
     3489 W
@@ -106,7 +108,7 @@ Yesterday's total energy consumption:
 
 ```powershell
 PS> .\tibber-consumption.ps1 -Daily
-Home ID for 'Vitahuset': 96a14971-525a-4420-aae9-e5aedaa129ff
+...
 Daily consumption from 2022-09-22 00:00:00 to 2022-09-23 00:00:00 (W. Europe Standard Time):
     29451 W
     81,12 SEK
@@ -127,7 +129,7 @@ Today's hourly energy production (last 24 hours):
 
 ```powershell
 PS> .\tibber-production.ps1
-Home ID for 'Vitahuset': 96a14971-525a-4420-aae9-e5aedaa129ff
+...
 Hourly production (W. Europe Standard Time)...
 From 2022-09-23 02:00:00 to 2022-09-23 03:00:00 (W. Europe Standard Time):
     3489 W
@@ -142,7 +144,7 @@ Yesterday's total energy production:
 
 ```powershell
 PS> .\tibber-production.ps1 -Daily
-Home ID for 'Vitahuset': 96a14971-525a-4420-aae9-e5aedaa129ff
+...
 Daily production from 2022-09-22 00:00:00 to 2022-09-23 00:00:00 (W. Europe Standard Time):
     29451 W
     81,12 SEK
@@ -168,7 +170,7 @@ Read live measurements until a given time:
 
 ```powershell
 PS> .\tibber-live.ps1 -Until '2022-09-23 11:02'
-Home ID for 'Vitahuset': 96a14971-525a-4420-aae9-e5aedaa129ff
+...
 New GraphQL subscription created: 9d1860e8-4625-4cf9-b865-6737e2dcde9e
 Reading metrics until 2022-09-23 11:02 (W. Europe Standard Time)...
 Live metrics at 2022-09-23 10:49:48 (W. Europe Standard Time):
@@ -210,7 +212,7 @@ Running these scripts on e.g. Azure Pipelines agent will by default log UTC time
 
 ```powershell
 PS> .\tibber-price-json.ps1 -Path 'C:\tibber' -TimeZone 'India Standard Time'
-Home ID for 'Vitahuset': 96a14971-525a-4420-aae9-e5aedaa129ff
+...
 Energy price (India Standard Time):
     0.7542 SEK at 2022-09-23 03:30:00 [level = 10] [score = 1]
     0.7113 SEK at 2022-09-23 04:30:00 [level = 10] [score = 1]
