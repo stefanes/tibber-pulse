@@ -10,7 +10,7 @@ Scripts for publishing [Tibber](https://tibber.com/) energy prices and consumpti
 >
 > To access the API you first must have a Tibber account (you can [sign up for Tibber](https://tibber.com/se/invite/gqpkcwrn) using the invitation code `gqpkcwrn` to get a **€50/500 kr bonus** for use in the [Tibber Store](https://tibber.com/se/store)).
 
-Before manually running the scripts in found in this repo you need to first install and setup the following PowerShell modules:
+Before manually running the scripts found in this repo you need to first install and setup the following PowerShell modules:
 
 * [PSTibber](https://github.com/stefanes/PSTibber)
 * [PSGraphite](https://github.com/stefanes/PSGraphite)
