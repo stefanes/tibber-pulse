@@ -202,7 +202,7 @@ function Send-LiveMetricsToGraphite {
 }
 
 # Set default environment variables
-$tibberDemoToken = '5K4MVS-OjfWhK_4yrjOlFe1F6kJXPVf7eQYggo8ebAE'
+$tibberDemoToken = '3A77EECF61BD445F47241A5A36202185C35AF3AF58609E19B53F3A8872AD7BE1-1'
 if (-Not $env:TIBBER_ACCESS_TOKEN) {
     $env:TIBBER_ACCESS_TOKEN = $tibberDemoToken
     Write-Warning "TIBBER_ACCESS_TOKEN set to '$tibberDemoToken'"
